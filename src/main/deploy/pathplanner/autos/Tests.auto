@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightStartToMid4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightStart2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MId3ToRightShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightShootToMid3"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightClimb"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
