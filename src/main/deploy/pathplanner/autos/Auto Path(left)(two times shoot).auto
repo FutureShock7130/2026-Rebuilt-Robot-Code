@@ -1,0 +1,73 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Auto center(left)(two times shoot)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickball"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Auto shoot(left)(two times shoot)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Auto center2(left)(two times shoot)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickball"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Auto shoot(left)(two times shoot)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Auto climb(left)(two times shoot)"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "climb"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

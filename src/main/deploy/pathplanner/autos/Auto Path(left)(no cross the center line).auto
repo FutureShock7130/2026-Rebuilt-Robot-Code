@@ -5,45 +5,40 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "RightStartToMid4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Auto center(left)(no cross the center line)"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickball"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RightStart2"
+            "pathName": "Auto shoot(left)"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 2.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MId3ToRightShoot"
+            "name": "shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RightShootToMid3"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RightClimb"
+            "pathName": "Auto climb(left)"
           }
         }
       ]
