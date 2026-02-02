@@ -4,6 +4,8 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -30,7 +32,7 @@ public class Telemetry {
      */
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
-        // SignalLogger.start();
+        SignalLogger.start();
 
         /* Set up the module state Mechanism2d telemetry */
         for (int i = 0; i < 4; ++i) {
@@ -50,6 +52,10 @@ public class Telemetry {
     private final StructArrayPublisher<SwerveModulePosition> driveModulePositions = driveStateTable.getStructArrayTopic("ModulePositions", SwerveModulePosition.struct).publish();
     private final DoublePublisher driveTimestamp = driveStateTable.getDoubleTopic("Timestamp").publish();
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
+
+    private final NetworkTable componentStateTable = inst.getTable("ComponentState");
+    private final StructPublisher<Pose3d> shooterPose = componentStateTable.getStructTopic("ShooterPose", Pose3d.struct).publish();
+    private final StructPublisher<Pose3d> climberPose = componentStateTable.getStructTopic("ClimberPose", Pose3d.struct).publish();
 
     /* Robot pose for field positioning */
     private final NetworkTable table = inst.getTable("Pose");
@@ -96,12 +102,12 @@ public class Telemetry {
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
 
         /* Also write to log file */
-        // SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
-        // SignalLogger.writeStruct("DriveState/Speeds", ChassisSpeeds.struct, state.Speeds);
-        // SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleState.struct, state.ModuleStates);
-        // SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
-        // SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
-        // SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
+        SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);
+        SignalLogger.writeStruct("DriveState/Speeds", ChassisSpeeds.struct, state.Speeds);
+        SignalLogger.writeStructArray("DriveState/ModuleStates", SwerveModuleState.struct, state.ModuleStates);
+        SignalLogger.writeStructArray("DriveState/ModuleTargets", SwerveModuleState.struct, state.ModuleTargets);
+        SignalLogger.writeStructArray("DriveState/ModulePositions", SwerveModulePosition.struct, state.ModulePositions);
+        SignalLogger.writeDouble("DriveState/OdometryPeriod", state.OdometryPeriod, "seconds");
 
         /* Telemeterize the pose to a Field2d */
         fieldTypePub.set("Field2d");
@@ -117,5 +123,17 @@ public class Telemetry {
             m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
             m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
         }
+    }
+
+    /** Accept the shooter angle and telemeterize it to SmartDashboard */
+    public void telemeterizeShooter(double pitchRadius) {
+        // non-zero values are model asset offset for ascope
+        shooterPose.set(new Pose3d(-0.085, 0.0, 0.507, new Rotation3d(0.0, pitchRadius - 0.62, 0.0)));
+    }
+
+    /** Accept the shooter angle and telemeterize it to SmartDashboard*/
+    public void telemeterizeClimber(double heightMeters) {
+        // non-zero values are model asset offset for ascope
+        climberPose.set(new Pose3d(0, 0, heightMeters, new Rotation3d()));
     }
 }
