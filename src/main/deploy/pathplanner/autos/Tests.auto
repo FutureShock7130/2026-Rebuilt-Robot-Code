@@ -25,13 +25,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MId3ToRightShoot"
+            "pathName": "RightShootToMid3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RightShootToMid3"
+            "pathName": "Mid3ToRightShoot"
           }
         },
         {
