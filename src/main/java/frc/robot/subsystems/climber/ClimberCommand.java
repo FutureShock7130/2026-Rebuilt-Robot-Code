@@ -1,7 +1,6 @@
-package frc.robot.commands;
+package frc.robot.subsystems.climber;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.climber.ClimberSubsystem;
 
 public class ClimberCommand {
    private final ClimberSubsystem climberSubsystem;
