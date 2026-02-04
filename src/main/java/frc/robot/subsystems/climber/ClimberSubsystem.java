@@ -35,8 +35,6 @@ public class ClimberSubsystem {
 
     }
     public void resetClimberPosition() {
-        leftMotor.set(0);
-        rightMotor.set(0);
     }
     public void setClimberTargetPosition(double position) {
         climberPID.setSetpoint(position);

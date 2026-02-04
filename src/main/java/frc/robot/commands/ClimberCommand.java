@@ -1,8 +1,10 @@
-package frc.robot.subsystems.climber;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 
-public class ClimberCommand {
+public class ClimberCommand extends Command{
    private final ClimberSubsystem climberSubsystem;
    private final double climberPosition;
 
@@ -11,7 +13,7 @@ public class ClimberCommand {
        this.climberPosition = climberPosition;
    }
    public void initialize() {
-        climberSubsystem.resetClimberPosition();
+     
         climberSubsystem.setClimberTargetPosition(climberPosition);
    }
     public void execute() {
@@ -22,5 +24,7 @@ public class ClimberCommand {
     public void end(boolean interrupted) {
           climberSubsystem.resetClimberPosition();
     }
-
+    public boolean isFinished() {
+          return false;
+    }
 }
