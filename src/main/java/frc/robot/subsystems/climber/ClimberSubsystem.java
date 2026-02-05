@@ -13,26 +13,23 @@ import edu.wpi.first.math.controller.PIDController;
 import frc.robot.subsystems.climber.ClimberConstants;
 
 public class ClimberSubsystem {
-    final CANBus leftBus = new CANBus("GTX7130");
-    final CANBus rightBus = new CANBus("GTX7130");
-    private TalonFX leftMotor = new TalonFX(ClimberConstants.leftMotorID,leftBus);
-    private TalonFX rightMotor = new TalonFX(ClimberConstants.rightMotorID,rightBus);
+    private TalonFX leftMotor = new TalonFX(ClimberConstants.leftMotorID,ClimberConstants.climberBus);
+    private TalonFX rightMotor = new TalonFX(ClimberConstants.rightMotorID,ClimberConstants.climberBus);
 
-    private PIDController climberPID = new PIDController(ClimberConstants.climberKP,
-    ClimberConstants.climberKI, ClimberConstants.climberKD);
+    private PIDController climberPID = new PIDController(ClimberConstants.climberKP,ClimberConstants.climberKI, ClimberConstants.climberKD);
 
     public ClimberSubsystem() {
-    TalonFXConfiguration leftConfiguration = new TalonFXConfiguration();
-    TalonFXConfiguration rightConfiguration = new TalonFXConfiguration();
-    leftConfiguration.Feedback.withSensorToMechanismRatio(12);
-    rightConfiguration.Feedback.withSensorToMechanismRatio(12);
+        TalonFXConfiguration leftConfiguration = new TalonFXConfiguration();
+        TalonFXConfiguration rightConfiguration = new TalonFXConfiguration();
+        leftConfiguration.Feedback.withSensorToMechanismRatio(12);
+        rightConfiguration.Feedback.withSensorToMechanismRatio(12);
     
-    MotorOutputConfigs leftConfigs = new MotorOutputConfigs();
-    MotorOutputConfigs rightConfigs = new MotorOutputConfigs();
-    leftConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
-    rightConfigs.Inverted =  InvertedValue.Clockwise_Positive;
-    leftMotor.setControl(new Follower(ClimberConstants.rightMotorID , MotorAlignmentValue.Aligned));
-    rightMotor.setPosition(0);
+        MotorOutputConfigs leftConfigs = new MotorOutputConfigs();
+        MotorOutputConfigs rightConfigs = new MotorOutputConfigs();
+        leftConfigs.Inverted = InvertedValue.CounterClockwise_Positive;
+        rightConfigs.Inverted =  InvertedValue.Clockwise_Positive;
+        leftMotor.setControl(new Follower(ClimberConstants.rightMotorID , MotorAlignmentValue.Aligned));
+        rightMotor.setPosition(0);
     }
 
     public double getClimberPosition() {
