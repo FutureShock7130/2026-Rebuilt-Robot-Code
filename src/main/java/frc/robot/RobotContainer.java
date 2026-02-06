@@ -21,9 +21,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveWithAim;
+import frc.robot.commands.index;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.indexer.IndexerConstants;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -46,6 +51,9 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
+    private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    private final IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
+
     public RobotContainer() {
         autoChooser = AutoBuilder.buildAutoChooser("Tests");
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -54,6 +62,9 @@ public class RobotContainer {
 
         // Warmup PathPlanner to avoid Java pauses
         FollowPathCommand.warmupCommand().schedule();
+
+        shooterSubsystem.setDefaultCommand(new Shoot(shooterSubsystem, null));
+        indexerSubsystem.setDefaultCommand(new index(indexerSubsystem, 0, 0));
     }
 
     private void configureBindings() {
@@ -105,6 +116,9 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        joystick.leftTrigger().whileTrue(new index(indexerSubsystem, IndexerConstants.indexerUpSpeed, IndexerConstants.indexerDownSpeed));
+        joystick.rightTrigger().whileTrue(new Shoot(shooterSubsystem, ()->drivetrain.getState().Pose));
     }
 
     public Command getAutonomousCommand() {
