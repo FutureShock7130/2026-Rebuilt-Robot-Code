@@ -11,10 +11,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
-import frc.FSLib.util.AllianceFlipUtil;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
@@ -29,7 +29,8 @@ public class Robot extends TimedRobot {
     private final boolean kUseLimelight = true;
     
     private final Timer teleopTimer = new Timer();
-    private String gameData;
+    private String gameData = "";
+    private boolean rumbleCommandRegistered = false;
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -55,11 +56,13 @@ public class Robot extends TimedRobot {
 
             LimelightHelpers.SetRobotOrientation("limelight-front", headingDeg, 0, 0, 0, 0, 0);
             LimelightHelpers.PoseEstimate llMeasurement;
-            llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-front");
+            llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-front");
             if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
                 m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
             }
         }
+
+        SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime());
     }
 
     @Override
@@ -97,9 +100,22 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        // if (gameData.length() == 0) {
-        //     gameData = DriverStation.getGameSpecificMessage();
-        // }
+        if (gameData.length() == 0) {
+            gameData = DriverStation.getGameSpecificMessage();
+        } else {
+            if (!rumbleCommandRegistered) {
+                if (DriverStation.getAlliance().get().toString().charAt(0) == gameData.charAt(0)) {
+                    SmartDashboard.putBoolean("Activation State", false);
+                    new Trigger(() -> DriverStation.getMatchTime() < 110).onTrue(m_robotContainer.rumble(0.5, 1));
+                    new Trigger(() -> DriverStation.getMatchTime() < 60).onTrue(m_robotContainer.rumble(0.5, 1));
+                } else {
+                    SmartDashboard.putBoolean("Activation State", true);
+                    new Trigger(() -> DriverStation.getMatchTime() < 85).onTrue(m_robotContainer.rumble(0.5, 1));
+                    new Trigger(() -> DriverStation.getMatchTime() < 35).onTrue(m_robotContainer.rumble(0.5, 1));
+                }
+                rumbleCommandRegistered = true;
+            }
+        }
     }
 
     @Override
