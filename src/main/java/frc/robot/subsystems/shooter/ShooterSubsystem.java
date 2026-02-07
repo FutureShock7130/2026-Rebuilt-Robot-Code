@@ -17,7 +17,7 @@ public class ShooterSubsystem extends SubsystemBase {
     TalonFX shooterAngle = new TalonFX(ShooterConstants.shooterAngleID, shooterAngleCanBus);
     PIDController shooterAnglePID = new PIDController(
         ShooterConstants.anglekP,
-        ShooterConstants.anglekI,
+        ShooterConstants.anglekI, 
         ShooterConstants.anglekD
     );
     double shooterAngleTarget = 0.0;
@@ -42,7 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
         motationConfigDown.MotionMagicAcceleration = ShooterConstants.MotionMagicAccelerationDown;
     }
     public double getShooterAnglePos(){
-        return (shooterAngle.getPosition().getValueAsDouble());
+        return (shooterAngle.getPosition().getValueAsDouble())/150*360; // degrees???
     }
     public void setShooterTarget(double angle){
         shooterAngleTarget = angle;
