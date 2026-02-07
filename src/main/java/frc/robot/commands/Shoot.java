@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.FSLib.util.AllianceFlipUtil;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class Shoot extends Command {
@@ -38,7 +39,8 @@ public class Shoot extends Command {
     public void execute() {
         Pose2d currentPose = robotPoseSupplier.get();
         Translation2d goalPose = new Translation2d(2, 2);
-        double distance = currentPose.getTranslation().getDistance(goalPose);
+        Translation2d trueTarget = AllianceFlipUtil.flip(goalPose);
+        double distance = currentPose.getTranslation().getDistance(trueTarget);
         // some calculations here
         double shooterUpSpeed = speedUpMap.get(distance); // replace with actual calculation
         shooterSubsystem.setShooterUpSpeed(shooterUpSpeed);
