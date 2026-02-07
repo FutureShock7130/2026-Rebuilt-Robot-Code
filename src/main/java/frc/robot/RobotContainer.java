@@ -63,8 +63,6 @@ public class RobotContainer {
 
         // Warmup PathPlanner to avoid Java pauses
         FollowPathCommand.warmupCommand().schedule();
-
-        shooterSubsystem.setDefaultCommand(new Shoot(shooterSubsystem, null));
         indexerSubsystem.setDefaultCommand(indexerSubsystem.run(0, 0));
     }
 
