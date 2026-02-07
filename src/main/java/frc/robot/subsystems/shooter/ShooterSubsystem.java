@@ -1,12 +1,10 @@
 package frc.robot.subsystems.shooter;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -15,14 +13,14 @@ public class ShooterSubsystem extends SubsystemBase {
     TalonFX shooterUp = new TalonFX(ShooterConstants.shooterUpID, Constants.canBus);
     TalonFX shooterDown = new TalonFX(ShooterConstants.shooterDownID, Constants.canBus);
     TalonFX shooterAngle = new TalonFX(ShooterConstants.shooterAngleID, Constants.canBus);
-    PIDController shooterAnglePID = new PIDController(
-            ShooterConstants.anglekP,
-            ShooterConstants.anglekI,
-            ShooterConstants.anglekD);
     double shooterAngleTarget = 0.0;
 
     public ShooterSubsystem() {
-        var shooterUpConfig = new TalonFXConfiguration();
+        TalonFXConfiguration shooterUpConfig = new TalonFXConfiguration();
+        shooterUpConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        shooterUpConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        shooterUpConfig.CurrentLimits.SupplyCurrentLimit = 70;
+        shooterUpConfig.Feedback.SensorToMechanismRatio = 3;
         var slot0Config = shooterUpConfig.Slot0;
         slot0Config.kS = ShooterConstants.Slot0kS;
         slot0Config.kV = ShooterConstants.Slot0kV;
@@ -33,7 +31,11 @@ public class ShooterSubsystem extends SubsystemBase {
         motationConfigUp.MotionMagicAcceleration = ShooterConstants.MotionMagicAccelerationUp;
         shooterUp.getConfigurator().apply(shooterUpConfig);
 
-        var shooterDownConfig = new TalonFXConfiguration();
+        TalonFXConfiguration shooterDownConfig = new TalonFXConfiguration();
+        shooterDownConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        shooterDownConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        shooterDownConfig.CurrentLimits.SupplyCurrentLimit = 70;
+        shooterDownConfig.Feedback.SensorToMechanismRatio = 3;
         var slot1Config = shooterDownConfig.Slot1;
         slot1Config.kS = ShooterConstants.Slot1kS;
         slot1Config.kV = ShooterConstants.Slot1kV;
@@ -47,21 +49,25 @@ public class ShooterSubsystem extends SubsystemBase {
         TalonFXConfiguration shooterAngleConfig = new TalonFXConfiguration();
         shooterAngleConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         shooterAngleConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        shooterAngleConfig.CurrentLimits.SupplyCurrentLimit = 0;
+        shooterAngleConfig.CurrentLimits.SupplyCurrentLimit = 70;
+        shooterAngleConfig.Feedback.SensorToMechanismRatio = 150;
+        var slot2Config = shooterAngleConfig.Slot2;
+        slot2Config.kS = ShooterConstants.Slot2kS;
+        slot2Config.kV = ShooterConstants.Slot2kV;
+        slot2Config.kP = ShooterConstants.Slot2kP;
+        slot2Config.kI = ShooterConstants.Slot2kI;
+        slot2Config.kD = ShooterConstants.Slot2kD;
+        var motationConfigAngle = shooterAngleConfig.MotionMagic;
+        motationConfigAngle.MotionMagicAcceleration = ShooterConstants.MotionMagicAccelerationAngle;
         shooterAngle.getConfigurator().apply(shooterAngleConfig);
     }
 
     public double getShooterAnglePos() {
-        return (shooterAngle.getPosition().getValueAsDouble()) / 150 * 360; // degrees???
+        return (shooterAngle.getPosition().getValueAsDouble()); 
     }
 
-    public void setShooterTarget(double angle) {
-        shooterAngleTarget = angle;
-    }
-
-    public void setShooterAngle() {
-        double setShooterAngle = (shooterAnglePID.calculate(getShooterAnglePos(), shooterAngleTarget));
-        shooterAngle.set(setShooterAngle);
+    public void setShooterAngle(double shooterAngleTarget) {
+        shooterAngle.set(shooterAngleTarget);
     }
 
     public void setShooterUpSpeed(double upSpeedRPM) {

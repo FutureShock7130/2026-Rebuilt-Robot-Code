@@ -1,6 +1,5 @@
 package frc.robot.subsystems.indexer;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -17,13 +16,13 @@ public class IndexerSubsystem extends SubsystemBase {
         TalonFXConfiguration indexerUpConfig = new TalonFXConfiguration();
         indexerUpConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         indexerUpConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        indexerUpConfig.CurrentLimits.SupplyCurrentLimit = 0;
+        indexerUpConfig.CurrentLimits.SupplyCurrentLimit = 70;
         indexerUp.getConfigurator().apply(indexerUpConfig);
 
         TalonFXConfiguration indexerDownConfig = new TalonFXConfiguration();
         indexerDownConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         indexerDownConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        indexerDownConfig.CurrentLimits.SupplyCurrentLimit = 0;
+        indexerDownConfig.CurrentLimits.SupplyCurrentLimit = 70;
         indexerDown.getConfigurator().apply(indexerDownConfig);
     }
 

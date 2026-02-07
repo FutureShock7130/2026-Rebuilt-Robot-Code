@@ -109,9 +109,10 @@ public class RobotContainer {
 
         drivetrain.registerTelemetry(logger::telemeterize);
 
-        joystick.leftTrigger().whileTrue(
-                indexerSubsystem.run(IndexerConstants.indexerUpSpeed, IndexerConstants.indexerDownSpeed));
-        joystick.rightTrigger().whileTrue(new Shoot(shooterSubsystem, () -> drivetrain.getState().Pose));
+        // joystick.leftTrigger().onTrue(
+        //         indexerSubsystem.run(IndexerConstants.indexerUpSpeed, IndexerConstants.indexerDownSpeed));
+        // joystick.rightTrigger().onTrue(indexerSubsystem.run(0,0))
+        joystick.rightTrigger().onTrue(new Shoot(shooterSubsystem, () -> drivetrain.getState().Pose));
     }
 
     public Command getAutonomousCommand() {

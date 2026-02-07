@@ -24,7 +24,7 @@ public class Shoot extends Command {
             addRequirements(shooterSubsystem);
 
             speedUpMap.put(0.0, 0.0);// rpm
-            speedUpMap.put(2.0, 1.0);// rpm
+            speedUpMap.put(1.0, -240.0);// rpm
             speedDownMap.put(0.0, 0.0);// rpm
             speedDownMap.put(0.0, 0.0);// rpm
             angleMap.put(0.0, 0.0);
@@ -38,7 +38,7 @@ public class Shoot extends Command {
     @Override
     public void execute() {
         Pose2d currentPose = robotPoseSupplier.get();
-        Translation2d goalPose = new Translation2d(2, 2);
+        Translation2d goalPose = new Translation2d(4.625, 4.034);
         Translation2d trueTarget = AllianceFlipUtil.flip(goalPose);
         double distance = currentPose.getTranslation().getDistance(trueTarget);
         // some calculations here
@@ -47,7 +47,7 @@ public class Shoot extends Command {
         double ShooterDownSpeed = speedDownMap.get(distance);
         shooterSubsystem.setShooterDownSpeed(ShooterDownSpeed);
         double shooterAngleTarget = angleMap.get(distance);
-        shooterSubsystem.setShooterTarget(shooterAngleTarget);
+        shooterSubsystem.setShooterAngle(shooterAngleTarget);
     }
 
     @Override
