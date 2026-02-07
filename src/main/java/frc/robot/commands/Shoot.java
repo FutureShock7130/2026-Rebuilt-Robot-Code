@@ -15,20 +15,20 @@ public class Shoot extends Command {
     private final InterpolatingDoubleTreeMap speedUpMap = new InterpolatingDoubleTreeMap();
     private final InterpolatingDoubleTreeMap speedDownMap = new InterpolatingDoubleTreeMap();
     private final InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
+
     public Shoot(
         ShooterSubsystem shooterSubsystem,
-        Supplier<Pose2d> robotPoseSupplier
-    ) {
-        this.shooterSubsystem = shooterSubsystem;
-        this.robotPoseSupplier = robotPoseSupplier;
-        addRequirements(shooterSubsystem);
+        Supplier<Pose2d> robotPoseSupplier) {
+            this.shooterSubsystem = shooterSubsystem;
+            this.robotPoseSupplier = robotPoseSupplier;
+            addRequirements(shooterSubsystem);
 
-        speedUpMap.put(0.0, 0.0);//rpm
-        speedUpMap.put(2.0, 1.0);//rpm
-        speedDownMap.put(0.0, 0.0);//rpm
-        speedDownMap.put(0.0, 0.0);//rpm
-        angleMap.put(0.0, 0.0);
-        angleMap.put(0.0, 0.0);
+            speedUpMap.put(0.0, 0.0);// rpm
+            speedUpMap.put(2.0, 1.0);// rpm
+            speedDownMap.put(0.0, 0.0);// rpm
+            speedDownMap.put(0.0, 0.0);// rpm
+            angleMap.put(0.0, 0.0);
+            angleMap.put(0.0, 0.0);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Shoot extends Command {
         double ShooterDownSpeed = speedDownMap.get(distance);
         shooterSubsystem.setShooterDownSpeed(ShooterDownSpeed);
         double shooterAngleTarget = angleMap.get(distance);
-        shooterSubsystem.setShooterTarget(shooterAngleTarget);       
+        shooterSubsystem.setShooterTarget(shooterAngleTarget);
     }
 
     @Override
