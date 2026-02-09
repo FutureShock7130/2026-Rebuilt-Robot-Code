@@ -10,11 +10,6 @@ public class ShooterConstants {
     public static final double Slot0kI = 0;
     public static final double Slot0kD = 0;
     public static final double MotionMagicAccelerationUp = 250;
-    public static final double Slot1kS = 0.2;
-    public static final double Slot1kV = 0.12;
-    public static final double Slot1kP = 0.1;
-    public static final double Slot1kI = 0;
-    public static final double Slot1kD = 0;
     public static final double MotionMagicAccelerationDown = 250;
     public static final double Slot2kS = 0;
     public static final double Slot2kV = 0;

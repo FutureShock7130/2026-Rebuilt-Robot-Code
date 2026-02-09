@@ -23,10 +23,10 @@ public class Shoot extends Command {
             this.robotPoseSupplier = robotPoseSupplier;
             addRequirements(shooterSubsystem);
 
-            speedUpMap.put(0.0, 0.0);// rpm
-            speedUpMap.put(1.0, -240.0);// rpm
-            speedDownMap.put(0.0, 0.0);// rpm
-            speedDownMap.put(0.0, 0.0);// rpm
+            speedUpMap.put(0.0, 0.0);// rps
+            speedUpMap.put(1.0, -4.0);// rps
+            speedDownMap.put(0.0, 0.0);// rps
+            speedDownMap.put(0.0, 0.0);// rps
             angleMap.put(0.0, 0.0);
             angleMap.put(0.0, 0.0);
     }
