@@ -14,24 +14,25 @@ import frc.FSLib.util.PhoenixUtil;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-    private final TalonFX motor = new TalonFX(kMotorId, Constants.kCanivoreBus);
+    // private final TalonFX motor = new TalonFX(kMotorId, Constants.kCanivoreBus);
 
     public Intake() {
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        config.MotorOutput
-            .withInverted(InvertedValue.CounterClockwise_Positive)
-            .withNeutralMode(NeutralModeValue.Coast);
-        config.CurrentLimits
-            .withStatorCurrentLimit(40)
-            .withSupplyCurrentLimit(20)
-            .withSupplyCurrentLowerLimit(20)
-            .withSupplyCurrentLowerTime(0.0);
+        // TalonFXConfiguration config = new TalonFXConfiguration();
+        // config.MotorOutput
+        //     .withInverted(InvertedValue.CounterClockwise_Positive)
+        //     .withNeutralMode(NeutralModeValue.Coast);
+        // config.CurrentLimits
+        //     .withStatorCurrentLimit(40)
+        //     .withSupplyCurrentLimit(20)
+        //     .withSupplyCurrentLowerLimit(20)
+        //     .withSupplyCurrentLowerTime(0.0);
 
-        PhoenixUtil.assertOk(motor, () -> motor.getConfigurator().apply(config));
+        // PhoenixUtil.assertOk(motor, () -> motor.getConfigurator().apply(config));
     }
 
     public Command set(double speed) {
-        return Commands.startEnd(() -> motor.set(speed), () -> motor.set(0), this);
+        // return Commands.startEnd(() -> motor.set(speed), () -> motor.set(0), this);
+        return Commands.none();
     }
 
     @Override

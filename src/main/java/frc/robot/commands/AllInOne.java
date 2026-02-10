@@ -11,21 +11,29 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.FSLib.util.AllianceFlipUtil;
+import frc.robot.LimelightHelpers;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 public class AllInOne extends Command {
     private final CommandSwerveDrivetrain drivetrain;
     private final Shooter shooter;
     private final Indexer indexer;
+    private final Intake intake;
 
     private final DoubleSupplier xSpeedSupplier, ySpeedSupplier, rotSpeedSupplier;
-    private final BooleanSupplier doAimSupplier, doShootSupplier;
+    private final BooleanSupplier doAimSupplier, doShootSupplier, doIntakeSupplier;
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(kMaxSpeed * 0.02).withRotationalDeadband(kMaxAngularRate * 0.02)
@@ -40,6 +48,9 @@ public class AllInOne extends Command {
 
     private final Translation2d target = new Translation2d(4.625, 4.034);
 
+    private final Transform3d robotToCamera = new Transform3d(new Translation3d(0.4, 0.0, 0.51), new Rotation3d(0, 0, 0));
+    private final Translation2d targetGamePieceToRobot = new Translation2d(-1, 0.0);
+
     private final InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
     private final InterpolatingDoubleTreeMap upSpeedMap = new InterpolatingDoubleTreeMap();
     private final InterpolatingDoubleTreeMap downSpeedMap = new InterpolatingDoubleTreeMap();
@@ -48,21 +59,25 @@ public class AllInOne extends Command {
         CommandSwerveDrivetrain drivetrain,
         Shooter shooter,
         Indexer indexer,
+        Intake intake,
         DoubleSupplier xSpeedSupplier,
         DoubleSupplier ySpeedSupplier,
         DoubleSupplier rotSpeedSupplier,
         BooleanSupplier doAimSupplier,
-        BooleanSupplier doShootSupplier
+        BooleanSupplier doShootSupplier,
+        BooleanSupplier doIntakeSupplier
     ) {
         this.drivetrain = drivetrain;
         this.shooter = shooter;
         this.indexer = indexer;
+        this.intake = intake;
         this.xSpeedSupplier = xSpeedSupplier;
         this.ySpeedSupplier = ySpeedSupplier;
         this.rotSpeedSupplier = rotSpeedSupplier;
         this.doAimSupplier = doAimSupplier;
         this.doShootSupplier = doShootSupplier;
-        addRequirements(drivetrain, shooter, indexer);
+        this.doIntakeSupplier = doIntakeSupplier;
+        addRequirements(drivetrain, shooter, indexer, intake);
 
         angleMap.put(0.0, 0.03);
         angleMap.put(1.4, 0.03);
@@ -110,10 +125,34 @@ public class AllInOne extends Command {
                 indexer.set(0, 0);
             }
         } else {
+            double xAdjust = 0.0, yAdjust = 0.0, zAdjust = 0.0;
+            if (doIntakeSupplier.getAsBoolean()) {
+                intake.set(IntakeConstants.kIntakeSpeed);
+                if (LimelightHelpers.getTV("limelight-front")) {
+                    Rotation2d cameraToGamePieceYaw = Rotation2d.fromDegrees(-LimelightHelpers.getTX("limelight-front"));
+
+                    // distance estimation formula : d = zDiff / tan(pitchDiff)
+                    // take absloute to avoid negitive pitchDiff value
+                    double distance = Math.abs(
+                        (robotToCamera.getZ())
+                        / Math.tan(robotToCamera.getRotation().getY() + Units.degreesToRadians(LimelightHelpers.getTY("limelight-front")))
+                    );
+                    // calcuate the translation and rotation diff between robot and target position.
+                    Translation2d cameraToGamePiece = new Translation2d(distance, cameraToGamePieceYaw);  
+                    Translation2d robotToTargetPosition = robotToCamera.getTranslation().toTranslation2d().plus(cameraToGamePiece).minus(targetGamePieceToRobot);
+                    double robotToTargetRotation = robotToTargetPosition.getAngle().getRadians();
+                    // Change from robot-centric speeds to field-centric speeds
+                    Translation2d fieldRobotToTargetPosition = robotToTargetPosition.rotateBy(curr.getRotation());
+                    xAdjust = fieldRobotToTargetPosition.getX();
+                    yAdjust = fieldRobotToTargetPosition.getY();
+                    zAdjust = robotToTargetRotation * 4;
+                }
+            }
+
             drivetrain.setControl(
-                drive.withVelocityX(xSpeedSupplier.getAsDouble())
-                    .withVelocityY(ySpeedSupplier.getAsDouble())
-                    .withRotationalRate(rotSpeedSupplier.getAsDouble())
+                drive.withVelocityX(xSpeedSupplier.getAsDouble() + xAdjust)
+                    .withVelocityY(ySpeedSupplier.getAsDouble() + yAdjust)
+                    .withRotationalRate(rotSpeedSupplier.getAsDouble() + zAdjust)
             );
 
             shooter.setAngle(0);

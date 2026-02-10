@@ -55,11 +55,13 @@ public class RobotContainer {
         drivetrain,
         shooter,
         indexer,
+        intake,
         () -> -joystick.getLeftY() * kMaxSpeed, // Drive forward with negative Y (forward)
         () -> -joystick.getLeftX() * kMaxSpeed, // Drive left with negative X (left)
         () -> -joystick.getRightX() * kMaxAngularRate, // Drive counterclockwise with negative X (left)
         () -> joystick.getHID().getRightBumperButton(),
-        () -> joystick.getHID().getRightTriggerAxis() > 0.5
+        () -> joystick.getHID().getRightTriggerAxis() > 0.5,
+        () -> joystick.getHID().getLeftTriggerAxis() > 0.5
     );
 
     /* Path follower */
@@ -67,7 +69,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         NamedCommands.registerCommand("Intake", intake.set(IntakeConstants.kIntakeSpeed));
-        NamedCommands.registerCommand("Shoot", new AllInOne(drivetrain, shooter, indexer, () -> 0, () -> 0, () -> 0, () -> true, () -> true).withTimeout(3.5));
+        NamedCommands.registerCommand("Shoot", new AllInOne(drivetrain, shooter, indexer, intake, () -> 0, () -> 0, () -> 0, () -> true, () -> true, () -> false).withTimeout(3.5));
         NamedCommands.registerCommand("PreClimb", climber.preClimb().until(climber::atTargetHeight));
         NamedCommands.registerCommand("Climb", climber.climb());
 
@@ -146,7 +148,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         /* Run the path selected from the auto chooser */
-        return autoChooser.getSelected();
+        return autoChooser.getSelected().withTimeout(10.0);
     }
 
     public Command rumble(double strength, double timeSeconds) {
