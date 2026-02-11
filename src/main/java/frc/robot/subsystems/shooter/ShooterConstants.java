@@ -4,6 +4,9 @@ public class ShooterConstants {
     public static final int shooterUpID = 54;
     public static final int shooterDownID = 55;
     public static final int shooterAngleID = 56;
+    public static final double StatorCurrentLimit = 120;
+    public static final double RotorToSensorRatio = 1;
+    public static final double SensorToMechanismRatio =3;
     public static final double Slot0kS = 0.2;
     public static final double Slot0kV = 0.12;
     public static final double Slot0kP = 0.1;
@@ -16,6 +19,11 @@ public class ShooterConstants {
     public static final double Slot2kP = 0;
     public static final double Slot2kI = 0;
     public static final double Slot2kD = 0;
+    public static final double StatorCurrentLimitAngle = 120;
+    public static final double RotorToSensorRatioAngle = 1;
+    public static final double SensorToMechanismRatioAngle =3;
+    public static final double ForwardSoftLimitThreshold = 0;
+    public static final double ReverseSoftLimitThreshold = 0;
     public static final double MotionMagicCruiseVelocityAngle = 0.05;
     public static final double MotionMagicAccelerationAngle = 0.3;
 
