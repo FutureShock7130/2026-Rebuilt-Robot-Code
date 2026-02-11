@@ -16,6 +16,7 @@ public class ShooterConstants {
     public static final double Slot2kP = 0;
     public static final double Slot2kI = 0;
     public static final double Slot2kD = 0;
-    public static final double MotionMagicAccelerationAngle = 250;
+    public static final double MotionMagicCruiseVelocityAngle = 0.05;
+    public static final double MotionMagicAccelerationAngle = 0.3;
 
 }

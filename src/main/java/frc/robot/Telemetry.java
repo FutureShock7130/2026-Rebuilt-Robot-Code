@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -56,6 +57,9 @@ public class Telemetry {
     private final NetworkTable componentStateTable = inst.getTable("ComponentState");
     private final StructPublisher<Pose3d> shooterPose = componentStateTable.getStructTopic("ShooterPose", Pose3d.struct).publish();
     private final StructPublisher<Pose3d> climberPose = componentStateTable.getStructTopic("ClimberPose", Pose3d.struct).publish();
+
+    private final NetworkTable shooterStateTable = inst.getTable("ShooterState");
+    private final DoublePublisher shooterAngle = shooterStateTable.getDoubleTopic("ShooterAngle").publish();
 
     /* Robot pose for field positioning */
     private final NetworkTable table = inst.getTable("Pose");
@@ -126,9 +130,10 @@ public class Telemetry {
     }
 
     /** Accept the shooter angle and telemeterize it to SmartDashboard */
-    public void telemeterizeShooter(double pitchRadius) {
+    public void telemeterizeShooter(double pitchRotations) {
         // non-zero values are model asset offset for ascope
-        shooterPose.set(new Pose3d(-0.085, 0.0, 0.507, new Rotation3d(0.0, pitchRadius - 0.62, 0.0)));
+        shooterPose.set(new Pose3d(-0.085, 0.0, 0.507, new Rotation3d(0.0, Units.rotationsToRadians(pitchRotations) - 0.62, 0.0)));
+        shooterAngle.set(pitchRotations);
     }
 
     /** Accept the shooter angle and telemeterize it to SmartDashboard*/

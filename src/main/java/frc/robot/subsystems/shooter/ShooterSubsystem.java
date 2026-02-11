@@ -1,11 +1,12 @@
 package frc.robot.subsystems.shooter;
 
+import java.util.function.DoubleConsumer;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -15,12 +16,16 @@ public class ShooterSubsystem extends SubsystemBase {
     TalonFX shooterAngle = new TalonFX(ShooterConstants.shooterAngleID, Constants.canBus);
     double shooterAngleTarget = 0.0;
 
+    private final MotionMagicVelocityVoltage reqUp = new MotionMagicVelocityVoltage(0).withEnableFOC(true).withUseTimesync(true);
+    private final MotionMagicVelocityVoltage reqDown = new MotionMagicVelocityVoltage(0).withEnableFOC(true).withUseTimesync(true);
+    private DoubleConsumer telemetry;
+
     public ShooterSubsystem() {
         TalonFXConfiguration shooterUpConfig = new TalonFXConfiguration();
         shooterUpConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         shooterUpConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         shooterUpConfig.CurrentLimits.StatorCurrentLimit = 120;
-        shooterUpConfig.Feedback.RotorToSensorRatio = 1;    
+        shooterUpConfig.Feedback.RotorToSensorRatio = 1;
         shooterUpConfig.Feedback.SensorToMechanismRatio = 3;
         var slot0Config = shooterUpConfig.Slot0;
         slot0Config.kS = ShooterConstants.Slot0kS;
@@ -50,7 +55,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
         TalonFXConfiguration shooterAngleConfig = new TalonFXConfiguration();
         shooterAngleConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-        shooterAngleConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
         shooterAngleConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         shooterAngleConfig.CurrentLimits.StatorCurrentLimit = 120;
         shooterAngleConfig.Feedback.RotorToSensorRatio = 1;
@@ -66,12 +70,13 @@ public class ShooterSubsystem extends SubsystemBase {
         slot2Config.kI = ShooterConstants.Slot2kI;
         slot2Config.kD = ShooterConstants.Slot2kD;
         var motationConfigAngle = shooterAngleConfig.MotionMagic;
+        motationConfigAngle.MotionMagicCruiseVelocity = ShooterConstants.MotionMagicCruiseVelocityAngle;
         motationConfigAngle.MotionMagicAcceleration = ShooterConstants.MotionMagicAccelerationAngle;
         shooterAngle.getConfigurator().apply(shooterAngleConfig);
     }
 
     public double getShooterAnglePos() {
-        return (shooterAngle.getPosition().getValueAsDouble()); 
+        return (shooterAngle.getPosition().getValueAsDouble());
     }
 
     public void setShooterAngle(double shooterAngleTarget) {
@@ -80,11 +85,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void setShooterUpSpeed(double upSpeedRPS) {
         // shooterUp.set(speed);
-        shooterUp.setControl(new MotionMagicVelocityVoltage(upSpeedRPS));
+        shooterUp.setControl(reqUp.withVelocity(upSpeedRPS));
     }
 
     public void setShooterDownSpeed(double downSpeedRPS) {
-        shooterDown.setControl(new MotionMagicVelocityVoltage(downSpeedRPS));
+        shooterDown.setControl(reqDown.withVelocity(downSpeedRPS));
     }
 
     public void stop() {
@@ -93,8 +98,12 @@ public class ShooterSubsystem extends SubsystemBase {
         shooterAngle.set(0);
     }
 
+    public void registerTelemetry(DoubleConsumer telemetry) {
+        this.telemetry = telemetry;
+    }
+
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("shooterPos", getShooterAnglePos());
+        telemetry.accept(getShooterAnglePos());
     }
 }
