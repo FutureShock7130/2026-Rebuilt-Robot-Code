@@ -21,101 +21,110 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveWithAim;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.indexer.IndexerConstants;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 
 public class RobotContainer {
-    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.95).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+        private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired
+                                                                                            // top
+                                                                                            // speed
+        private double MaxAngularRate = RotationsPerSecond.of(0.95).in(RadiansPerSecond); // 3/4 of a rotation per
+                                                                                          // second
+                                                                                          // max angular velocity
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-    private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+        /* Setting up bindings for necessary control of the swerve drive platform */
+        private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+        private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+        private final SwerveRequest.RobotCentric forwardStraight = new SwerveRequest.RobotCentric()
+                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+        private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
+        private final CommandXboxController joystick = new CommandXboxController(0);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+        public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    // private final Intake intake = new Intake();
+        // private final Intake intake = new Intake();
 
-    /* Path follower */
-    private final SendableChooser<Command> autoChooser;
+        /* Path follower */
+        private final SendableChooser<Command> autoChooser;
 
-    public RobotContainer() {
-        autoChooser = AutoBuilder.buildAutoChooser("Tests");
-        SmartDashboard.putData("Auto Mode", autoChooser);
+        private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+        private final IndexerSubsystem indexerSubsystem = new IndexerSubsystem();
 
-        configureBindings();
+        public RobotContainer() {
+                autoChooser = AutoBuilder.buildAutoChooser("Tests");
+                SmartDashboard.putData("Auto Mode", autoChooser);
 
-        // Warmup PathPlanner to avoid Java pauses
-        FollowPathCommand.warmupCommand().schedule();
-    }
+                configureBindings();
 
-    private void configureBindings() {
-        // Note that X is defined as forward according to WPILib convention,
-        // and Y is defined as to the left according to WPILib convention.
-        drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            new SwerveWithAim(
-                drivetrain,
-                () -> -joystick.getLeftY() * MaxSpeed, // Drive forward with negative Y (forward)
-                () -> -joystick.getLeftX() * MaxSpeed, // Drive left with negative X (left)
-                () -> -joystick.getRightX() * MaxAngularRate, // Drive counterclockwise with negative X (left)
-                joystick.getHID()::getRightBumperButton
-            )
-        );
+                // Warmup PathPlanner to avoid Java pauses
+                FollowPathCommand.warmupCommand().schedule();
+                indexerSubsystem.setDefaultCommand(indexerSubsystem.run(0, 0));
+        }
 
-        // joystick.rightTrigger(0.2).whileTrue(
-        //     Commands.runEnd(() -> intake.setVoltage(-12), () -> intake.setVoltage(0), intake)
-        // );
-        
+        private void configureBindings() {
+                // Note that X is defined as forward according to WPILib convention,
+                // and Y is defined as to the left according to WPILib convention.
+                drivetrain.setDefaultCommand(
+                                // Drivetrain will execute this command periodically
+                                new SwerveWithAim(
+                                                drivetrain,
+                                                () -> -joystick.getLeftY() * MaxSpeed, // Drive forward with negative Y
+                                                                                       // (forward)
+                                                () -> -joystick.getLeftX() * MaxSpeed, // Drive left with negative X
+                                                                                       // (left)
+                                                () -> -joystick.getRightX() * MaxAngularRate, // Drive counterclockwise
+                                                                                              // with negative X (left)
+                                                joystick.getHID()::getRightBumperButton));
 
-        // Idle while the robot is disabled. This ensures the configured
-        // neutral mode is applied to the drive motors while disabled.
-        final var idle = new SwerveRequest.Idle();
-        RobotModeTriggers.disabled().whileTrue(
-            drivetrain.applyRequest(() -> idle).ignoringDisable(true)
-        );
+                // joystick.rightTrigger(0.2).whileTrue(
+                // Commands.runEnd(() -> intake.setVoltage(-12), () -> intake.setVoltage(0),
+                // intake)
+                // );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        ));
+                // Idle while the robot is disabled. This ensures the configured
+                // neutral mode is applied to the drive motors while disabled.
+                final var idle = new SwerveRequest.Idle();
+                RobotModeTriggers.disabled().whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
 
-        joystick.povUp().whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(0.5).withVelocityY(0))
-        );
-        joystick.povDown().whileTrue(drivetrain.applyRequest(() ->
-            forwardStraight.withVelocityX(-0.5).withVelocityY(0))
-        );
+                joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+                joystick.b().whileTrue(drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+                joystick.povUp().whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(0.5).withVelocityY(0)));
+                joystick.povDown().whileTrue(drivetrain.applyRequest(() -> forwardStraight.withVelocityX(-0.5).withVelocityY(0)));
 
-        // Reset the field-centric heading on left bumper press.
-        joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+                // Run SysId routines when holding back/start and X/Y.
+                // Note that each routine should be run exactly once in a single log.
+                joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+                joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+                joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+                joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
-    }
+                // Reset the field-centric heading on left bumper press.
+                joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-    public Command getAutonomousCommand() {
-        /* Run the path selected from the auto chooser */
-        return autoChooser.getSelected();
-    }
+                drivetrain.registerTelemetry(logger::telemeterize);
 
-    public Command rumble(double strength, double timeSeconds) {
-        return Commands.runEnd(
-            () -> joystick.setRumble(RumbleType.kBothRumble, strength),
-            () -> joystick.setRumble(RumbleType.kBothRumble, 0)
-        ).withTimeout(timeSeconds);
-    }
+                joystick.rightTrigger().whileTrue(new Shoot(shooterSubsystem, () -> drivetrain.getState().Pose));
+                joystick.rightBumper().whileTrue(indexerSubsystem.run(IndexerConstants.indexerUpSpeed,IndexerConstants.indexerDownSpeed));
+
+                shooterSubsystem.registerTelemetry(logger::telemeterizeShooter);
+        }
+
+        public Command getAutonomousCommand() {
+                /* Run the path selected from the auto chooser */
+                return autoChooser.getSelected();
+        }
+
+        public Command rumble(double strength, double timeSeconds) {
+                return Commands.runEnd(
+                                () -> joystick.setRumble(RumbleType.kBothRumble, strength),
+                                () -> joystick.setRumble(RumbleType.kBothRumble, 0)).withTimeout(timeSeconds);
+        }
 }
