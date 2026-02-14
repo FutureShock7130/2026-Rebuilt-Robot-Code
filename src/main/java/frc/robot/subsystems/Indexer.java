@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.IndexerContants.*;
+import static frc.robot.Constants.IndexerConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -21,9 +21,11 @@ public class Indexer extends SubsystemBase {
             .withNeutralMode(NeutralModeValue.Brake)
             .withInverted(InvertedValue.Clockwise_Positive);
         config.CurrentLimits
-            .withStatorCurrentLimit(120)
-            .withSupplyCurrentLimit(70);
+            .withStatorCurrentLimit(80)
+            .withSupplyCurrentLimit(40);
         PhoenixUtil.assertOk(upIndex, () -> upIndex.getConfigurator().apply(config));
+
+        config.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
         PhoenixUtil.assertOk(downIndex, () -> downIndex.getConfigurator().apply(config));
     }
 
