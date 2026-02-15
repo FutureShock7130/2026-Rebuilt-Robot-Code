@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.ShooterConstants.*;
@@ -176,11 +176,11 @@ public class Shooter extends SubsystemBase {
         return atTargetSpeed() && atTargetAngle();
     }
 
-    private boolean atTargetSpeed() {
+    public boolean atTargetSpeed() {
         return upShooter.getMotionMagicAtTarget().getValue() && downShooter.getMotionMagicAtTarget().getValue();
     }
 
-    private boolean atTargetAngle() {
+    public boolean atTargetAngle() {
         return angleMotor.getMotionMagicAtTarget().getValue();
     }
 

@@ -33,7 +33,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.shooter.Shooter;
 
 public class RobotContainer {
     private final Telemetry logger = new Telemetry(kMaxSpeed);
@@ -61,7 +61,8 @@ public class RobotContainer {
         indexer,
         () -> joystick.getHID().getRightBumperButton(),
         () -> joystick.getHID().getRightTriggerAxis() > 0.5,
-        () -> drivetrain.getState().Pose
+        () -> drivetrain.getState().Pose,
+        () -> drivetrain.getState().Speeds
     );
 
     private final ManualShooterIndexer manualShooterIndexer = new ManualShooterIndexer(
@@ -86,7 +87,7 @@ public class RobotContainer {
         NamedCommands.registerCommand(
             "Shoot", 
             Commands.parallel(
-                Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose)),
+                Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds)).withName("ShootWithAim"),
                 Commands.waitSeconds(1.0).andThen(intake.toDefaultState())
             ).withTimeout(2.0)
         );

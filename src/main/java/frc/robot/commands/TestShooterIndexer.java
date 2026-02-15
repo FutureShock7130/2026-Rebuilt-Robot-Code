@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.FSLib.util.AllianceFlipUtil;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.shooter.Shooter;
 
 public class TestShooterIndexer extends Command {
     private final Shooter shooter;

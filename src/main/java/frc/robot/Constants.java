@@ -7,13 +7,14 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.CANBus;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import frc.robot.generated.TunerConstants;
 
 public class Constants {
     public static final CANBus kCanivoreBus = new CANBus("GTX7130");
 
     public static final double kMaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-    public static final double kMaxAngularRate = RotationsPerSecond.of(1.5).in(RadiansPerSecond); 
+    public static final double kMaxAngularRate = RotationsPerSecond.of(1.5).in(RadiansPerSecond);
 
     public static final class FieldConstants {
         public static final Translation2d kHubLocation = new Translation2d(4.625, 4.034);
@@ -39,7 +40,7 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int kAngleMotorId = 61;
         public static final int kIntakeMotorId = 60;
-        
+
         public static final double kAngleMax = 0.0;
         public static final double kAngleMin = -0.28167;
 
@@ -62,5 +63,36 @@ public class Constants {
         public static final double kSensorToAngleRatio = 150.0;
         public static final double kSensorToUpShooterRatio = 3.0;
         public static final double kSensorToDownShooterRatio = 1.8;
+
+        public static final InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
+        public static final InterpolatingDoubleTreeMap upSpeedMap = new InterpolatingDoubleTreeMap();
+        public static final InterpolatingDoubleTreeMap downSpeedMap = new InterpolatingDoubleTreeMap();
+        public static final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
+
+        static {
+            angleMap.put(0.0, 0.0);
+            angleMap.put(1.4, 0.02);
+            angleMap.put(3.0, 0.05);
+            angleMap.put(4.0, 0.06);
+            angleMap.put(8.0, 0.06);
+
+            upSpeedMap.put(0.0, 32.0);
+            upSpeedMap.put(1.4, 32.0);
+            upSpeedMap.put(3.0, 32.0);
+            upSpeedMap.put(4.0, 32.0);
+            upSpeedMap.put(8.0, 32.0);
+
+            downSpeedMap.put(0.0, 32.0);
+            downSpeedMap.put(1.4, 32.0);
+            downSpeedMap.put(3.0, 32.0);
+            downSpeedMap.put(4.0, 44.0);
+            downSpeedMap.put(8.0, 50.0);
+
+            timeOfFlightMap.put(0.5, 0.9);
+            timeOfFlightMap.put(1.0, 1.2);
+            timeOfFlightMap.put(2.0, 1.5);
+            timeOfFlightMap.put(3.0, 1.8);
+            timeOfFlightMap.put(4.0, 2.0);
+        }
     }
 }
