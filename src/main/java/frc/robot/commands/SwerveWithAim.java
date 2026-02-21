@@ -9,8 +9,10 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.FSLib.util.AllianceFlipUtil;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -28,6 +30,17 @@ public class SwerveWithAim extends Command {
             .withHeadingPID(12, 0, 0.5)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+
+    private Translation2d autoCenteringVelocity = new Translation2d(0, 0);
+
+    private final PIDController yPID = new PIDController(12, 0, 0.5);
+
+    private final Translation2d kRightTrenchStartPoint = new Translation2d(3.4, 0.7);
+    private final Translation2d kTrench = new Translation2d(2.3, 0);
+    private final Translation2d u = kTrench.div(kTrench.getNorm());
+    private final Translation2d n = new Translation2d(-u.getY(), u.getX());
+
+    private final Translation2d kRightTrenchMidPoint = new Translation2d(4.6, 0);
 
     /** Command for aiming during auto */
     public SwerveWithAim(CommandSwerveDrivetrain drivetrain) {
@@ -53,11 +66,16 @@ public class SwerveWithAim extends Command {
         this.rotSpeedSupplier = rotSpeedSupplier;
         this.doAimSupplier = doAimSupplier;
         addRequirements(drivetrain);
+
+        yPID.setSetpoint(0.0);
     }
 
     @Override
     public void execute() {
         Pose2d robotPose = drivetrain.getState().Pose;
+
+        autoCenteringVelocity = n.times(-yPID.calculate(n.dot(robotPose.getTranslation().minus(kRightTrenchStartPoint)))).plus(u.times(xSpeedSupplier.getAsDouble()));
+
         if (
             doAimSupplier.getAsBoolean() &&
             (robotPose.getX() - AllianceFlipUtil.flipX(0)) * (robotPose.getX() - AllianceFlipUtil.flipX(4.028)) < 0 // in alliance zones
@@ -72,6 +90,12 @@ public class SwerveWithAim extends Command {
             } else {
                 drivetrain.setControl(brake);
             }
+        } else if (Math.abs(xSpeedSupplier.getAsDouble()) > 2.5 && robotPose.getTranslation().minus(kRightTrenchMidPoint).getNorm() < 2.0 && Math.abs(robotPose.getRotation().getDegrees()) < 5) {
+            drivetrain.setControl(
+                driveAngle.withVelocityX(autoCenteringVelocity.getX())
+                    .withVelocityY(autoCenteringVelocity.getY())
+                    .withTargetDirection(Rotation2d.fromDegrees(0))
+            );
         } else {
             drivetrain.setControl(
                 drive.withVelocityX(xSpeedSupplier.getAsDouble())
