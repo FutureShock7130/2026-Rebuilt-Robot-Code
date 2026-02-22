@@ -53,7 +53,8 @@ public class RobotContainer {
         () -> -joystick.getLeftY() * kMaxSpeed,
         () -> -joystick.getLeftX() * kMaxSpeed,
         () -> -joystick.getRightX() * kMaxAngularRate,
-        joystick.rightBumper()
+        joystick.rightBumper(),
+        joystick.a()
     );
 
     private final ShooterIndexer shooterIndexer = new ShooterIndexer(
@@ -114,7 +115,7 @@ public class RobotContainer {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(drive);
-        shooter.setDefaultCommand(testShooterIndexer);
+        shooter.setDefaultCommand(shooterIndexer);
         
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
