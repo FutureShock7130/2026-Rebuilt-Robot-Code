@@ -17,10 +17,7 @@ public class IntakeSubsystem {
         .withMotorOutput(new MotorOutputConfigs());        
     }
     
-    public void runIntake(){
-        intakeMotor.set(1);
-    }
-    public void stopIntake(){
-        intakeMotor.set(0);
+    public void runIntake(double intakeSP){
+        intakeMotor.set(intakeSP);
     }
 }
