@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.FSLib.util.AllianceFlipUtil;
 import frc.robot.subsystems.Indexer;
@@ -62,7 +63,9 @@ public class ShooterIndexer extends Command {
             shooter.setAngle(solution.shooterAngle());
             shooter.setSpeed(solution.shooterUpSpeed(), solution.shooterDownSpeed());
 
-            if (doShootSupplier.getAsBoolean() && shooter.atTargetSpeed() && shooter.atTargetAngle() && solution.isReachable()) {
+            SmartDashboard.putBoolean("atTargetSpeed", shooter.atTargetSpeed());
+            SmartDashboard.putBoolean("atTargetAngle", shooter.atTargetAngle());
+            if (doShootSupplier.getAsBoolean() && shooter.atTargetSpeed() && solution.isReachable()) {
                 indexer.set(1.0, 1.0);
             } else {
                 indexer.set(0.0, 0.0);
