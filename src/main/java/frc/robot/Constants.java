@@ -18,6 +18,10 @@ public class Constants {
 
     public static final class FieldConstants {
         public static final Translation2d kHubLocation = new Translation2d(4.625, 4.034);
+        public static final Translation2d kTransportTarget_Left = new Translation2d(1.387, 6.487);
+        public static final Translation2d kTransportTarget_Right = new Translation2d(1.387, 1.367);
+        public static final Translation2d kLeftTrenchStartPoint_Blue = new Translation2d(3.1, 7.35);
+        public static final Translation2d kRightTrenchStartPoint_Blue = new Translation2d(3.1, 0.75);
     }
 
     public static final class ClimberConstants {
@@ -71,25 +75,28 @@ public class Constants {
 
         static {
             angleMap.put(0.0, 0.0);
-            angleMap.put(1.4, 0.018);
-            angleMap.put(2.3, 0.03);
+            angleMap.put(1.4, 0.02);
+            angleMap.put(2.3, 0.035);
             angleMap.put(3.0, 0.05);
             angleMap.put(4.0, 0.0625);
+            angleMap.put(5.0, 0.064);
             angleMap.put(6.0, 0.065);
 
-            upSpeedMap.put(0.0, 20.0);
-            upSpeedMap.put(1.4, 22.0);
+            upSpeedMap.put(0.0, 22.0);
+            upSpeedMap.put(1.4, 23.0);
             upSpeedMap.put(2.3, 24.0);
             upSpeedMap.put(3.0, 24.5);
-            upSpeedMap.put(4.0, 29.0);
-            upSpeedMap.put(6.0, 33.0);
+            upSpeedMap.put(4.0, 27.5);
+            upSpeedMap.put(5.0, 31.0);
+            upSpeedMap.put(6.0, 35.0);
 
-            downSpeedMap.put(0.0, 30.0);
-            downSpeedMap.put(1.4, 32.0);
-            downSpeedMap.put(2.3, 34.0);
-            downSpeedMap.put(3.0, 36.0);
+            downSpeedMap.put(0.0, 32.0);
+            downSpeedMap.put(1.4, 33.5);
+            downSpeedMap.put(2.3, 36.0);
+            downSpeedMap.put(3.0, 38.0);
             downSpeedMap.put(4.0, 39.5);
-            downSpeedMap.put(6.0, 43.5);
+            downSpeedMap.put(5.0, 44.0);
+            downSpeedMap.put(6.0, 48.0);
 
             timeOfFlightMap.put(0.5, 0.9);
             timeOfFlightMap.put(1.0, 1.2);

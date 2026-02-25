@@ -14,13 +14,12 @@ public class ManualShooterIndexer extends Command {
     private final XboxController driverController, operatorController;
 
     private double targetAngle = 0, targetUpSpeed = 0, targetDownSpeed = 0;
-    
+
     public ManualShooterIndexer(
-        Shooter shooter,
-        Indexer indexer,
-        XboxController driverController,
-        XboxController operatorController
-    ) {
+            Shooter shooter,
+            Indexer indexer,
+            XboxController driverController,
+            XboxController operatorController) {
         this.shooter = shooter;
         this.indexer = indexer;
         this.driverController = driverController;
@@ -32,16 +31,28 @@ public class ManualShooterIndexer extends Command {
     @Override
     public void execute() {
         if (operatorController.getRightTriggerAxis() > 0.5) {
-            targetAngle += 0.0001;
+            targetAngle += 0.0003;
         }
         if (operatorController.getLeftTriggerAxis() > 0.5) {
-            targetAngle -= 0.0001;
+            targetAngle -= 0.0003;
+        }
+
+        if (operatorController.getAButtonPressed()) {
+            targetAngle = 0.05;
+        }
+
+        if (Math.abs(operatorController.getRightY()) > 0.1 || Math.abs(operatorController.getLeftY()) > 0.1) {
+            targetUpSpeed = operatorController.getRightY() * 32;
+            targetDownSpeed = operatorController.getLeftY() * 50;
+        } else if (operatorController.getBButtonPressed()) {
+            targetUpSpeed = 32;
+            targetDownSpeed = 50;
+        } else {
+            targetUpSpeed = 0;
+            targetDownSpeed = 0;
         }
 
         targetAngle = MathUtil.clamp(targetAngle, ShooterConstants.kAngleMin, ShooterConstants.kAngleMax);
-
-        targetUpSpeed = operatorController.getRightY() * 32;
-        targetDownSpeed = operatorController.getLeftY() * 52;
 
         shooter.setAngle(targetAngle);
         shooter.setSpeed(targetUpSpeed, targetDownSpeed);

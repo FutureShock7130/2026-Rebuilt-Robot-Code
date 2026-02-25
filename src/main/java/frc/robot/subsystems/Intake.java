@@ -137,6 +137,15 @@ public class Intake extends SubsystemBase {
         ).withName("IntakeToDefaultState");
     }
 
+    public Command toFeedingState() {
+        return this.run(
+            () -> {
+                angleMotor.setControl(angleRequest.withPosition(kDefaultAngle));
+                intakeMotor.set(0.5);
+            }
+        ).withName("IntakeToDefaultState");
+    }
+
     public void registerTelemetry(DoubleConsumer telemetry) {
         this.telemetry = telemetry;
     }

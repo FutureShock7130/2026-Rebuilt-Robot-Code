@@ -2,6 +2,10 @@ package frc.robot.commands;
 
 import static frc.robot.Constants.kMaxAngularRate;
 import static frc.robot.Constants.FieldConstants.kHubLocation;
+import static frc.robot.Constants.FieldConstants.kTransportTarget_Left;
+import static frc.robot.Constants.FieldConstants.kTransportTarget_Right;
+import static frc.robot.Constants.FieldConstants.kLeftTrenchStartPoint_Blue;
+import static frc.robot.Constants.FieldConstants.kRightTrenchStartPoint_Blue;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -10,7 +14,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,7 +29,7 @@ public class SwerveWithAim extends Command {
     private final ShooterCompensator shooterCompensator = new ShooterCompensator();
 
     private final DoubleSupplier xSpeedSupplier, ySpeedSupplier, rotSpeedSupplier;
-    private final BooleanSupplier doAimSupplier, doCenteringSupplier;
+    private final BooleanSupplier doAimSupplier, doCenteringSupplier, doTransportSupplier;
 
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -40,8 +43,6 @@ public class SwerveWithAim extends Command {
 
     private final PIDController yPID = new PIDController(8.5, 0, 0.3);
 
-    private final Translation2d kLeftTrenchStartPoint_Blue = new Translation2d(3.1, 7.425);
-    private final Translation2d kRightTrenchStartPoint_Blue = new Translation2d(3.1, 0.65);
     private final Translation2d kTrench = new Translation2d(2.7, 0);
     private final Translation2d u = kTrench.div(kTrench.getNorm());
     private final Translation2d n = new Translation2d(-u.getY(), u.getX());
@@ -54,6 +55,7 @@ public class SwerveWithAim extends Command {
                 () -> 0.0,
                 () -> 0.0,
                 () -> true,
+                () -> false,
                 () -> false);
     }
 
@@ -63,13 +65,15 @@ public class SwerveWithAim extends Command {
             DoubleSupplier ySpeedSupplier,
             DoubleSupplier rotSpeedSupplier,
             BooleanSupplier doAimSupplier,
-            BooleanSupplier doCenteringSupplier) {
+            BooleanSupplier doCenteringSupplier,
+            BooleanSupplier doTransportSupplier) {
         this.drivetrain = drivetrain;
         this.xSpeedSupplier = xSpeedSupplier;
         this.ySpeedSupplier = ySpeedSupplier;
         this.rotSpeedSupplier = rotSpeedSupplier;
         this.doAimSupplier = doAimSupplier;
         this.doCenteringSupplier = doCenteringSupplier;
+        this.doTransportSupplier = doTransportSupplier;
         addRequirements(drivetrain);
 
         yPID.setSetpoint(0.0);
@@ -90,30 +94,39 @@ public class SwerveWithAim extends Command {
                                                                                                                         // alliance
                                                                                                                         // zones
         ) {
-
+            // using ShooterCompensator
             Rotation2d compensatedAngle = shooterCompensator.calculateCompensatedHeading(
                     robotPose,
                     fieldSpeeds,
                     AllianceFlipUtil.flip(kHubLocation));
 
+            // using simple angle to target
             Rotation2d angle = AllianceFlipUtil.flip(kHubLocation).minus(robotPose.getTranslation()).getAngle();
             if (Math.abs(angle.getDegrees() - robotPose.getRotation().getDegrees()) > 1.5
                     || Math.abs(xSpeedSupplier.getAsDouble()) > 0 || Math.abs(ySpeedSupplier.getAsDouble()) > 0) {
                 drivetrain.setControl(
                         driveAngle.withVelocityX(xSpeedSupplier.getAsDouble())
                                 .withVelocityY(ySpeedSupplier.getAsDouble())
-                                .withTargetDirection(compensatedAngle));
+                                .withTargetDirection(angle));
             } else {
                 drivetrain.setControl(brake);
             }
-        } else if (doCenteringSupplier.getAsBoolean()
-        // && isInTrenchZone(robotPose)
-        ) {
-            System.out.println("auto centering");
+        } else if (doCenteringSupplier.getAsBoolean()) {
             drivetrain.setControl(
                     driveAngle.withVelocityX(autoCenteringVelocity.getX())
                             .withVelocityY(autoCenteringVelocity.getY())
                             .withTargetDirection(AllianceFlipUtil.flip(Rotation2d.fromDegrees(0))));
+
+        } else if (doTransportSupplier.getAsBoolean()) {
+            Rotation2d angle_Transport = AllianceFlipUtil
+                    .flip(getCloserTrenchStartPoint() == AllianceFlipUtil.flip(kLeftTrenchStartPoint_Blue)
+                            ? kTransportTarget_Left
+                            : kTransportTarget_Right)
+                    .minus(robotPose.getTranslation()).getAngle();
+            drivetrain.setControl(
+                    driveAngle.withVelocityX(xSpeedSupplier.getAsDouble())
+                            .withVelocityY(ySpeedSupplier.getAsDouble())
+                            .withTargetDirection(angle_Transport));
         } else {
             drivetrain.setControl(
                     drive.withVelocityX(xSpeedSupplier.getAsDouble())

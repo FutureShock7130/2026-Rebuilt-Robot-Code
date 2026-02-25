@@ -78,7 +78,7 @@ public class ShooterCompensator {
     // movement and fuel flight time
     // Tune this factor. Start at 0.3. 
     // If it STILL shoots too far when driving towards the target, increase to 0.5 or 0.6.
-    private static final double DISTANCE_COMP_FACTOR = 0.3;
+    private static final double DISTANCE_COMP_FACTOR = 0.4;
 
     private double calculateEffectiveDistance(Pose2d robotPose, ChassisSpeeds speeds, Translation2d target) {
         Translation2d robotTrans = robotPose.getTranslation();
