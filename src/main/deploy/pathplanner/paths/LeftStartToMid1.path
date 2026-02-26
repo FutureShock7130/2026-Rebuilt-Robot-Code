@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.996629052273683,
-        "y": 7.428606741573034
+        "x": 6.613444444444444,
+        "y": 7.533255555555556
       },
       "isLocked": false,
       "linkedName": "LeftTrenchStart"
@@ -20,8 +20,8 @@
         "y": 5.818426966292135
       },
       "prevControl": {
-        "x": 7.760449438202247,
-        "y": 7.76491011235955
+        "x": 7.5684000000000005,
+        "y": 7.270155555555554
       },
       "nextControl": null,
       "isLocked": false,

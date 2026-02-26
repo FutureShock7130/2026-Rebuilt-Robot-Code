@@ -34,6 +34,11 @@ public class Indexer extends SubsystemBase {
         downIndex.set(downSpeed);
     }
 
+    public void setVolt(double upVolts, double downVolts) {
+        upIndex.setVoltage(upVolts);
+        downIndex.setVoltage(downVolts);
+    }
+
     public void stopAll() {
         upIndex.set(0);
         downIndex.set(0);

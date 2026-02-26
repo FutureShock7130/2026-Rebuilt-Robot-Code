@@ -59,10 +59,10 @@ public class Robot extends TimedRobot {
             LimelightHelpers.PoseEstimate llRightMeasurement, llLeftMeasurement;
             llRightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
             llLeftMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
-            if (llRightMeasurement != null && llRightMeasurement.tagCount > 1 && Math.abs(omegaRps) < 2.0) {
+            if (llRightMeasurement != null && llRightMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
                 m_robotContainer.drivetrain.addVisionMeasurement(llRightMeasurement.pose, llRightMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
             }
-            if (llLeftMeasurement != null && llLeftMeasurement.tagCount > 1 && Math.abs(omegaRps) < 2.0) {
+            if (llLeftMeasurement != null && llLeftMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
                 m_robotContainer.drivetrain.addVisionMeasurement(llLeftMeasurement.pose, llLeftMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
             }
         }
@@ -119,6 +119,15 @@ public class Robot extends TimedRobot {
                 rumbleCommandRegistered = true;
             }
         }
+
+        // 2:40 ~ 2:20 Auto
+        // 2:20 ~ 2:10 Transition
+        // 2:10 ~ 1:45 Shift 1
+        // 1:45 ~ 1:20 Shift 2
+        // 1:20 ~ 0:55 Shift 3
+        // 0:55 ~ 0:30 Shift 4
+        // 0:30 ~ 0:00 Endgame 
+    
     }
 
     @Override

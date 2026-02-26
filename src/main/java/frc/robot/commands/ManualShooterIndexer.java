@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import static frc.robot.Constants.IntakeConstants.kIntakeVoltage;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -58,7 +60,7 @@ public class ManualShooterIndexer extends Command {
         shooter.setSpeed(targetUpSpeed, targetDownSpeed);
 
         if (driverController.getRightTriggerAxis() > 0.5) {
-            indexer.set(1.0, 1.0);
+            indexer.setVolt(kIntakeVoltage, kIntakeVoltage);
         } else {
             indexer.set(0.0, 0.0);
         }

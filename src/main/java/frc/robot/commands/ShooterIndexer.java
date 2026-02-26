@@ -3,6 +3,7 @@ package frc.robot.commands;
 import static frc.robot.Constants.FieldConstants.kHubLocation;
 import static frc.robot.Constants.FieldConstants.kTransportTarget_Left;
 import static frc.robot.Constants.FieldConstants.kTransportTarget_Right;
+import static frc.robot.Constants.IntakeConstants.kIntakeVoltage;
 import static frc.robot.Constants.FieldConstants.kLeftTrenchStartPoint_Blue;
 import static frc.robot.Constants.FieldConstants.kRightTrenchStartPoint_Blue;
 
@@ -70,28 +71,25 @@ public class ShooterIndexer extends Command {
 
             if (doShootSupplier.getAsBoolean() && shooter.atTargetAngle() && shooter.atTargetSpeed()
                     && solution.isReachable()) {
-                indexer.set(1.0, 1.0);
+                indexer.setVolt(kIntakeVoltage, kIntakeVoltage);
             } else {
-                indexer.set(0.0, 0.0);
+                indexer.setVolt(0.0, 0.0);
             }
         } else if (doTransportSupplier.getAsBoolean()) {
             SolvingParameters solvingParameters_Transport= new SolvingParameters(robotPoseSupplier.get(), chassisSpeeds.get(),
-                    AllianceFlipUtil.flip(getCloserTrenchStartPoint() == AllianceFlipUtil.flip(kLeftTrenchStartPoint_Blue)
-                            ? kTransportTarget_Left
-                            : kTransportTarget_Right));
+                    AllianceFlipUtil.flip(kTransportTarget_Left));
             FiringSolution solution_Transport = compensator.solve(solvingParameters_Transport);
             shooter.setAngle(solution_Transport.shooterAngle());
-            shooter.setSpeed(solution_Transport.shooterUpSpeed() - 8, solution_Transport.shooterDownSpeed() - 8);
-            if (doShootSupplier.getAsBoolean() && shooter.atTargetAngle() && shooter.atTargetSpeed()
-                    && solution_Transport.isReachable()) {
-                indexer.set(1.0, 1.0);
+            shooter.setSpeed(solution_Transport.shooterUpSpeed(), solution_Transport.shooterDownSpeed());
+            if (doShootSupplier.getAsBoolean()) {
+                indexer.setVolt(kIntakeVoltage, kIntakeVoltage);
             } else {
-                indexer.set(0.0, 0.0);
+                indexer.setVolt(0.0, 0.0);
             }
         } else {
             shooter.setAngle(0.0);
             shooter.setSpeed(0.0, 0.0);
-            indexer.set(0.0, 0.0);
+            indexer.setVolt(0.0, 0.0);
         }
     }
 

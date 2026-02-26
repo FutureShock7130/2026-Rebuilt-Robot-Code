@@ -18,6 +18,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.FSLib.util.AllianceFlipUtil;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -102,8 +104,14 @@ public class SwerveWithAim extends Command {
 
             // using simple angle to target
             Rotation2d angle = AllianceFlipUtil.flip(kHubLocation).minus(robotPose.getTranslation()).getAngle();
+
+            if (DriverStation.getAlliance().get() == Alliance.Red) {
+                                angle = angle.plus(Rotation2d.kPi);
+                        }
+
             if (Math.abs(angle.getDegrees() - robotPose.getRotation().getDegrees()) > 1.5
                     || Math.abs(xSpeedSupplier.getAsDouble()) > 0 || Math.abs(ySpeedSupplier.getAsDouble()) > 0) {
+
                 drivetrain.setControl(
                         driveAngle.withVelocityX(xSpeedSupplier.getAsDouble())
                                 .withVelocityY(ySpeedSupplier.getAsDouble())

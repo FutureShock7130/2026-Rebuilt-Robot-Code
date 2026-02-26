@@ -91,8 +91,8 @@ public class RobotContainer {
             "Shoot", 
             Commands.parallel(
                 Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds)).withName("ShootWithAim"),
-                Commands.waitSeconds(1.0).andThen(intake.toDefaultState())
-            ).withTimeout(2.0)
+                Commands.waitSeconds(0.1).andThen(intake.toFeedingState())
+            ).withTimeout(3.5)
         );
 
         new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(40, 32)).withName("Accel"));
