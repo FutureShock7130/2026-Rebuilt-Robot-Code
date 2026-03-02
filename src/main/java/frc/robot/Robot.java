@@ -9,6 +9,7 @@ import com.ctre.phoenix6.HootAutoReplay;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,7 +29,6 @@ public class Robot extends TimedRobot {
 
     private final boolean kUseLimelight = true;
     
-    private final Timer teleopTimer = new Timer();
     private String gameData = "";
     private boolean rumbleCommandRegistered = false;
 
@@ -55,14 +55,21 @@ public class Robot extends TimedRobot {
             double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
             LimelightHelpers.SetRobotOrientation("limelight-right", headingDeg, 0, 0, 0, 0, 0);
-            LimelightHelpers.PoseEstimate llMeasurement;
-            llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-right");
-            if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-                m_robotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
+            LimelightHelpers.SetRobotOrientation("limelight-left", headingDeg, 0, 0, 0, 0, 0);
+            LimelightHelpers.PoseEstimate llRightMeasurement, llLeftMeasurement;
+            llRightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
+            llLeftMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+            if (llRightMeasurement != null && llRightMeasurement.tagCount > 1 && Math.abs(omegaRps) < 2.0) {
+                m_robotContainer.drivetrain.addVisionMeasurement(llRightMeasurement.pose, llRightMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
+            }
+            if (llLeftMeasurement != null && llLeftMeasurement.tagCount > 1 && Math.abs(omegaRps) < 2.0) {
+                m_robotContainer.drivetrain.addVisionMeasurement(llLeftMeasurement.pose, llLeftMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
             }
         }
 
         SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime());
+        SmartDashboard.putNumber("RobotVoltage", RobotController.getBatteryVoltage());
+        SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     }
 
     @Override
@@ -94,8 +101,6 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().cancel(m_autonomousCommand);
         }
-
-        teleopTimer.restart();
     }
 
     @Override
@@ -105,11 +110,9 @@ public class Robot extends TimedRobot {
         } else {
             if (!rumbleCommandRegistered) {
                 if (DriverStation.getAlliance().get().toString().charAt(0) == gameData.charAt(0)) {
-                    SmartDashboard.putBoolean("Activation State", false);
                     new Trigger(() -> DriverStation.getMatchTime() < 110).onTrue(m_robotContainer.rumble(0.5, 1));
                     new Trigger(() -> DriverStation.getMatchTime() < 60).onTrue(m_robotContainer.rumble(0.5, 1));
                 } else {
-                    SmartDashboard.putBoolean("Activation State", true);
                     new Trigger(() -> DriverStation.getMatchTime() < 85).onTrue(m_robotContainer.rumble(0.5, 1));
                     new Trigger(() -> DriverStation.getMatchTime() < 35).onTrue(m_robotContainer.rumble(0.5, 1));
                 }

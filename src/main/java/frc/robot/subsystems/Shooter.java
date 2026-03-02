@@ -1,11 +1,11 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Volts;
-import static frc.robot.Constants.ShooterContants.*;
+import static frc.robot.Constants.ShooterConstants.*;
 
+import java.util.function.BiConsumer;
 import java.util.function.DoubleConsumer;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -15,7 +15,6 @@ import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -25,13 +24,9 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.FSLib.util.PhoenixUtil;
 import frc.robot.Constants;
 
@@ -39,53 +34,21 @@ public class Shooter extends SubsystemBase {
     private final TalonFX angleMotor = new TalonFX(kAngleId, Constants.kCanivoreBus);
     private final TalonFX upShooter = new TalonFX(kUpShooterId, Constants.kCanivoreBus);
     private final TalonFX downShooter = new TalonFX(kDownShooterId, Constants.kCanivoreBus);
+    private final TalonFX downShooter2 = new TalonFX(kDownShooter2Id, Constants.kCanivoreBus);
 
     private final DynamicMotionMagicVoltage angleRequest = new DynamicMotionMagicVoltage(0, 0.5, 2.5).withEnableFOC(true);
 
     private final MotionMagicVelocityVoltage upShooterRequeset = new MotionMagicVelocityVoltage(0)
-        .withEnableFOC(true);
-        // .withUseTimesync(true)
-        // .withUpdateFreqHz(0);
+        .withEnableFOC(true)
+        .withUseTimesync(true)
+        .withUpdateFreqHz(0);
     private final MotionMagicVelocityVoltage downShooterRequest = new MotionMagicVelocityVoltage(0)
-        .withEnableFOC(true);
-        // .withUseTimesync(true)
-        // .withUpdateFreqHz(0);
-
-    private final VoltageOut voltageRequest = new VoltageOut(0.0);
-    
-    private final SysIdRoutine upShooterRoutine =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null,
-                Volts.of(4),
-                null,
-                (state) -> SignalLogger.writeString("upShooterState", state.toString())
-            ),
-            new SysIdRoutine.Mechanism(
-                (volts) -> upShooter.setControl(voltageRequest.withOutput(volts.in(Volts))),
-                null,
-                this
-            )
-        );
-
-    private final SysIdRoutine downShooterRoutine =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(
-                null,
-                Volts.of(4),
-                null,
-                (state) -> SignalLogger.writeString("downShooterState", state.toString())
-            ),
-            new SysIdRoutine.Mechanism(
-                (volts) -> downShooter.setControl(voltageRequest.withOutput(volts.in(Volts))),
-                null,
-                this
-            )
-    );
-    
-    private SysIdRoutine sysIdRoutineToApply = downShooterRoutine;
+        .withEnableFOC(true)
+        .withUseTimesync(true)
+        .withUpdateFreqHz(0);
 
     private DoubleConsumer telemetry;
+    private BiConsumer<Double, Double> speedsTelemetry;
 
     private final DCMotorSim upShooterSimModel = new DCMotorSim(
         LinearSystemId.createDCMotorSystem(
@@ -121,7 +84,7 @@ public class Shooter extends SubsystemBase {
             )
             .withMotorOutput(
                 new MotorOutputConfigs()
-                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withInverted(InvertedValue.CounterClockwise_Positive)
                     .withNeutralMode(NeutralModeValue.Brake)
             )
             .withSlot0(
@@ -153,13 +116,13 @@ public class Shooter extends SubsystemBase {
             )
             .withMotionMagic(
                 new MotionMagicConfigs()
-                    .withMotionMagicAcceleration(50)
-                    .withMotionMagicJerk(500)
+                    .withMotionMagicAcceleration(80)
+                    .withMotionMagicJerk(400)
             )
             .withSlot0(
                 new Slot0Configs()
-                    .withKS(0.30043).withKV(0.36869).withKA(0.0050201)
-                    .withKP(0.44095).withKI(0).withKD(0)
+                    .withKS(0.27354).withKV(0.37161).withKA(0.0056677)
+                    .withKP(0.50867).withKI(0.1).withKD(0)
             );
         
         PhoenixUtil.assertOk(upShooter, () -> upShooter.getConfigurator().apply(upShooterConfig));
@@ -169,11 +132,6 @@ public class Shooter extends SubsystemBase {
                 new FeedbackConfigs()
                     .withSensorToMechanismRatio(kSensorToDownShooterRatio)
             )
-            .withSlot0(
-                new Slot0Configs()
-                    .withKS(0.22682).withKV(0.36803).withKA(0.011237)
-                    .withKP(0.16811).withKI(0).withKD(0)
-            )
             .withMotorOutput(
                 new MotorOutputConfigs()
                     .withInverted(InvertedValue.CounterClockwise_Positive)
@@ -181,11 +139,17 @@ public class Shooter extends SubsystemBase {
             )
             .withMotionMagic(
                 new MotionMagicConfigs()
-                    .withMotionMagicAcceleration(50)
-                    .withMotionMagicJerk(500)
+                    .withMotionMagicAcceleration(80)
+                    .withMotionMagicJerk(400)
+            )
+            .withSlot0(
+                new Slot0Configs()
+                    .withKS(0.22486).withKV(0.223).withKA(0.013321)
+                    .withKP(0.33013).withKI(0.1).withKD(0)
             );
         
         PhoenixUtil.assertOk(downShooter, () -> downShooter.getConfigurator().apply(downShooterConfig));
+        PhoenixUtil.assertOk(downShooter2, () -> downShooter2.getConfigurator().apply(downShooterConfig));
 
         angleMotor.setPosition(0.0);
 
@@ -198,9 +162,10 @@ public class Shooter extends SubsystemBase {
         angleSim.setMotorType(TalonFXSimState.MotorType.KrakenX60);
     }
 
-    public void set(double upShooterRPS, double downShooterRPS) {
+    public void setSpeed(double upShooterRPS, double downShooterRPS) {
         upShooter.setControl(upShooterRequeset.withVelocity(upShooterRPS));
         downShooter.setControl(downShooterRequest.withVelocity(downShooterRPS));
+        downShooter2.setControl(downShooterRequest.withVelocity(downShooterRPS));
     }
 
     public void setAngle(double angleRotations) {
@@ -211,33 +176,27 @@ public class Shooter extends SubsystemBase {
         return atTargetSpeed() && atTargetAngle();
     }
 
-    public boolean atTargetSpeed() {
+    private boolean atTargetSpeed() {
         return upShooter.getMotionMagicAtTarget().getValue() && downShooter.getMotionMagicAtTarget().getValue();
     }
 
-    public boolean atTargetAngle() {
-        return Math.abs(angleMotor.getClosedLoopError().getValueAsDouble()) < 0.002;
+    private boolean atTargetAngle() {
+        return angleMotor.getMotionMagicAtTarget().getValue();
     }
 
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return sysIdRoutineToApply.quasistatic(direction);
-    }
-
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return sysIdRoutineToApply.dynamic(direction);
-    }
-
-    public void registerTelemetry(DoubleConsumer telemetry) {
+    public void registerTelemetry(DoubleConsumer telemetry, BiConsumer<Double, Double> speedsTelemetry) {
         this.telemetry = telemetry;
+        this.speedsTelemetry = speedsTelemetry;
     }
 
     @Override
     public void periodic() {
         if (telemetry != null) {
-            telemetry.accept(Units.rotationsToRadians(angleMotor.getPosition().getValueAsDouble()));
+            telemetry.accept(angleMotor.getPosition().getValueAsDouble());
         }
-        SmartDashboard.putNumber("UpShooterSpeed", upShooter.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("DownShooterSpeed", downShooter.getVelocity().getValueAsDouble());
+        if (speedsTelemetry != null) {
+            speedsTelemetry.accept(upShooter.getVelocity().getValueAsDouble(), downShooter.getVelocity().getValueAsDouble());
+        }
     }
 
     @Override

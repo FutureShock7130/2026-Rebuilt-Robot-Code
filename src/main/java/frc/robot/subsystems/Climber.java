@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
@@ -27,9 +28,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Climber extends SubsystemBase {
-    private final TalonFX leftClimber = new TalonFX(kLeftClimberId, Constants.kCanivoreBus);
+    private final TalonFX leftClimber = new TalonFX(kMotorId, Constants.kCanivoreBus);
 
-    private final DynamicMotionMagicVoltage request = new DynamicMotionMagicVoltage(0, 3, 15)
+    private final DynamicMotionMagicVoltage request = new DynamicMotionMagicVoltage(0, 50, 250)
         .withEnableFOC(true);
 
     private DoubleConsumer telemetry;
@@ -60,53 +61,53 @@ public class Climber extends SubsystemBase {
             )
             .withSlot0(
                 new Slot0Configs()
-                    .withKS(0.24).withKV(0.5).withKA(0)
-                    .withKP(0.2).withKI(0).withKD(0)
+                    .withKS(0.0).withKV(8).withKA(0.25)
+                    .withKP(20.0).withKI(0).withKD(0)
+            )
+            .withSlot1(
+                new Slot1Configs()
+                    .withKS(0.0).withKV(8).withKA(0.25)
+                    .withKP(20.0).withKI(0).withKD(0)
             )
             .withSoftwareLimitSwitch(
                 new SoftwareLimitSwitchConfigs()
                     .withForwardSoftLimitEnable(true)
-                    .withForwardSoftLimitThreshold(kMaxHeightMeters)
+                    .withForwardSoftLimitThreshold(kMaxHeightMeters / kMechanismToHeighRatio)
                     .withReverseSoftLimitEnable(true)
-                    .withReverseSoftLimitThreshold(kMinHeightMeters)
+                    .withReverseSoftLimitThreshold(kMinHeightMeters / kMechanismToHeighRatio)
             );
 
         leftClimber.getConfigurator().apply(config);
 
-        leftClimber.setPosition(kMinHeightMeters / kClimbHeightMeters);
+        leftClimber.setPosition(0);
 
         var talonFXSim = leftClimber.getSimState();
         talonFXSim.Orientation = ChassisReference.CounterClockwise_Positive;
         talonFXSim.setMotorType(TalonFXSimState.MotorType.KrakenX60);
     }
 
-    private Command move(double targetHeightMeters) {
-        return this.runOnce(() -> {
-            leftClimber.setControl(request.withPosition(targetHeightMeters / kMechanismToHeighRatio));
-        });
-    }
-
-    public Command preClimb() {
-        return move(kPreClimbHeightMeters);
-    }
-
-    public Command climb() {
-        return move(kClimbHeightMeters);
-    }
-
-    public Command retract() {
-        return move(0);
-    }
-
-    public Command extendThenClimb() {
-        return this.startEnd(
+    public Command toPreClimbPos() {
+        return this.run(
             () -> {
-                leftClimber.setControl(request.withPosition(kPreClimbHeightMeters));
-            },
-            () -> {
-                leftClimber.setControl(request.withPosition(kClimbHeightMeters));
+                leftClimber.setControl(request.withPosition(kPreClimbHeightMeters / kMechanismToHeighRatio).withSlot(0));
             }
-        );
+        ).withName("ClimberToPreClimbPos");
+    }
+
+    public Command toClimbPos() {
+        return this.run(
+            () -> {
+                leftClimber.setControl(request.withPosition(kClimbHeightMeters / kMechanismToHeighRatio).withSlot(1));
+            }
+        ).withName("ClimberToClimbPos");
+    }
+
+    public Command toDefaultPose() {
+        return this.run(
+            () -> {
+                leftClimber.setControl(request.withPosition(0).withSlot(0));
+            }
+        ).withName("ClimberToDefaultPos");
     }
 
     public boolean atTargetHeight() {
