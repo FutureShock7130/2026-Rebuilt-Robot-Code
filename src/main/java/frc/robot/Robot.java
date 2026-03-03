@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
             }
         }
 
-        SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime());
+        SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime() + 1.0);
         SmartDashboard.putNumber("RobotVoltage", RobotController.getBatteryVoltage());
         SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     }
