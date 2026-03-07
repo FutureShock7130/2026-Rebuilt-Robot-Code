@@ -84,38 +84,41 @@ public class SwerveWithAim extends Command {
     @Override
     public void execute() {
         Pose2d robotPose = drivetrain.getState().Pose;
-        ChassisSpeeds fieldSpeeds = drivetrain.getState().Speeds;
+        ChassisSpeeds robotSpeeds = drivetrain.getState().Speeds;
 
         autoCenteringVelocity = n
                 .times(
-                        yPID.calculate(n.dot(robotPose.getTranslation().minus(getCloserTrenchStartPoint()))))
+                        yPID.calculate(n.dot(robotPose.getTranslation()
+                                .minus(getCloserTrenchStartPoint()))))
                 .plus(u.times(xSpeedSupplier.getAsDouble()));
 
         if (doAimSupplier.getAsBoolean() &&
-                (robotPose.getX() - AllianceFlipUtil.flipX(0)) * (robotPose.getX() - AllianceFlipUtil.flipX(4.028)) < 0 // in
-                                                                                                                        // alliance
-                                                                                                                        // zones
+                (robotPose.getX() - AllianceFlipUtil.flipX(0))
+                        * (robotPose.getX() - AllianceFlipUtil.flipX(4.028)) < 0 // in
+                                                                                 // alliance
+                                                                                 // zones
         ) {
-            // using ShooterCompensator
-            Rotation2d compensatedAngle = shooterCompensator.calculateCompensatedHeading(
+            ShooterCompensator.SolvingParameters params = new ShooterCompensator.SolvingParameters(
                     robotPose,
-                    fieldSpeeds,
+                    robotSpeeds,
                     AllianceFlipUtil.flip(kHubLocation));
 
+            ShooterCompensator.FiringSolution solution = shooterCompensator.solve(params);
+
+            Rotation2d compensatedAngle = solution.targetHeading();
+
             // using simple angle to target
-            Rotation2d angle = AllianceFlipUtil.flip(kHubLocation).minus(robotPose.getTranslation()).getAngle();
+            Rotation2d angle = AllianceFlipUtil.flip(AllianceFlipUtil.flip(kHubLocation)
+                    .minus(robotPose.getTranslation()).getAngle());
 
-            if (DriverStation.getAlliance().get() == Alliance.Red) {
-                                angle = angle.plus(Rotation2d.kPi);
-                        }
-
-            if (Math.abs(angle.getDegrees() - robotPose.getRotation().getDegrees()) > 1.5
-                    || Math.abs(xSpeedSupplier.getAsDouble()) > 0 || Math.abs(ySpeedSupplier.getAsDouble()) > 0) {
+            if (Math.abs(compensatedAngle.getDegrees() - robotPose.getRotation().getDegrees()) > 1.5
+                    || Math.abs(xSpeedSupplier.getAsDouble()) > 0
+                    || Math.abs(ySpeedSupplier.getAsDouble()) > 0) {
 
                 drivetrain.setControl(
                         driveAngle.withVelocityX(xSpeedSupplier.getAsDouble())
                                 .withVelocityY(ySpeedSupplier.getAsDouble())
-                                .withTargetDirection(angle));
+                                .withTargetDirection(compensatedAngle));
             } else {
                 drivetrain.setControl(brake);
             }
@@ -123,13 +126,15 @@ public class SwerveWithAim extends Command {
             drivetrain.setControl(
                     driveAngle.withVelocityX(autoCenteringVelocity.getX())
                             .withVelocityY(autoCenteringVelocity.getY())
-                            .withTargetDirection(AllianceFlipUtil.flip(Rotation2d.fromDegrees(0))));
+                            .withTargetDirection(AllianceFlipUtil
+                                    .flip(Rotation2d.fromDegrees(0))));
 
         } else if (doTransportSupplier.getAsBoolean()) {
             Rotation2d angle_Transport = AllianceFlipUtil
-                    .flip(getCloserTrenchStartPoint() == AllianceFlipUtil.flip(kLeftTrenchStartPoint_Blue)
-                            ? kTransportTarget_Left
-                            : kTransportTarget_Right)
+                    .flip(getCloserTrenchStartPoint() == AllianceFlipUtil
+                            .flip(kLeftTrenchStartPoint_Blue)
+                                    ? kTransportTarget_Left
+                                    : kTransportTarget_Right)
                     .minus(robotPose.getTranslation()).getAngle();
             drivetrain.setControl(
                     driveAngle.withVelocityX(xSpeedSupplier.getAsDouble())

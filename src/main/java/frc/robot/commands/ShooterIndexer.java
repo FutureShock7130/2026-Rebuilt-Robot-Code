@@ -62,21 +62,20 @@ public class ShooterIndexer extends Command {
     @Override
     public void execute() {
         if (doAimSupplier.getAsBoolean()) {
-            SolvingParameters solvingParameters = new SolvingParameters(robotPoseSupplier.get(), chassisSpeeds.get(),
+            SolvingParameters solvingParameters = new SolvingParameters(AllianceFlipUtil.flip(robotPoseSupplier.get()), chassisSpeeds.get(),
                     AllianceFlipUtil.flip(kHubLocation));
             FiringSolution solution = compensator.solve(solvingParameters);
             
             shooter.setAngle(solution.shooterAngle());
             shooter.setSpeed(solution.shooterUpSpeed(), solution.shooterDownSpeed());
 
-            if (doShootSupplier.getAsBoolean() && shooter.atTargetAngle() && shooter.atTargetSpeed()
-                    && solution.isReachable()) {
+            if (doShootSupplier.getAsBoolean()) {
                 indexer.setVolt(kIntakeVoltage, kIntakeVoltage);
             } else {
                 indexer.setVolt(0.0, 0.0);
             }
         } else if (doTransportSupplier.getAsBoolean()) {
-            SolvingParameters solvingParameters_Transport= new SolvingParameters(robotPoseSupplier.get(), chassisSpeeds.get(),
+            SolvingParameters solvingParameters_Transport= new SolvingParameters(AllianceFlipUtil.flip(robotPoseSupplier.get()), chassisSpeeds.get(),
                     AllianceFlipUtil.flip(kTransportTarget_Left));
             FiringSolution solution_Transport = compensator.solve(solvingParameters_Transport);
             shooter.setAngle(solution_Transport.shooterAngle());

@@ -173,7 +173,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean atTarget() {
-        return atTargetSpeed() && atTargetAngle();
+        return upShooter.getMotionMagicAtTarget().getValue() && downShooter.getMotionMagicAtTarget().getValue() && angleMotor.getMotionMagicAtTarget().getValue();
     }
 
     public boolean atTargetSpeed() {
