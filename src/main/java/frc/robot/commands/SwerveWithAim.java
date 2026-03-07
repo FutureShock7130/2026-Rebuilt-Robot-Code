@@ -86,11 +86,14 @@ public class SwerveWithAim extends Command {
         Pose2d robotPose = drivetrain.getState().Pose;
         ChassisSpeeds robotSpeeds = drivetrain.getState().Speeds;
 
-        autoCenteringVelocity = n
+        Translation2d actualU = AllianceFlipUtil.shouldFlip() ? u.times(-1) : u;
+        Translation2d actualN = AllianceFlipUtil.shouldFlip() ? n.times(-1) : n;
+
+        autoCenteringVelocity = actualN
                 .times(
-                        yPID.calculate(n.dot(robotPose.getTranslation()
+                        yPID.calculate(actualN.dot(robotPose.getTranslation()
                                 .minus(getCloserTrenchStartPoint()))))
-                .plus(u.times(xSpeedSupplier.getAsDouble()));
+                .plus(actualU.times(xSpeedSupplier.getAsDouble()));
 
         if (doAimSupplier.getAsBoolean() &&
                 (robotPose.getX() - AllianceFlipUtil.flipX(0))
