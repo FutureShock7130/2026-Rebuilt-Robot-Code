@@ -79,25 +79,25 @@ public class Constants {
             angleMap.put(1.4, 0.02);
             angleMap.put(2.3, 0.0325);
             angleMap.put(3.0, 0.0525);
-            angleMap.put(4.0, 0.0625);
-            angleMap.put(5.0, 0.063);
+            angleMap.put(4.0, 0.063);
+            angleMap.put(5.0, 0.0632);
             angleMap.put(5.5, 0.0635);
             angleMap.put(6.0, 0.065);
 
             upSpeedMap.put(0.0, 22.0);
             upSpeedMap.put(1.4, 23.0);
             upSpeedMap.put(2.3, 24.0);
-            upSpeedMap.put(3.0, 25.0);
-            upSpeedMap.put(4.0, 26.0);
-            upSpeedMap.put(5.0, 31.0);
-            upSpeedMap.put(6.0, 35.0);
+            upSpeedMap.put(3.0, 24.0);
+            upSpeedMap.put(4.0, 25.0);
+            upSpeedMap.put(5.0, 27.0);
+            upSpeedMap.put(6.0, 33.0);
 
             downSpeedMap.put(0.0, 33.5);
             downSpeedMap.put(1.4, 35.0);
-            downSpeedMap.put(2.3, 36.0);
+            downSpeedMap.put(2.3, 36.5);
             downSpeedMap.put(3.0, 38.5);
-            downSpeedMap.put(4.0, 40.5);
-            downSpeedMap.put(5.0, 49.0);
+            downSpeedMap.put(4.0, 42.0);
+            downSpeedMap.put(5.0, 47.0);
             downSpeedMap.put(6.0, 51.0);
 
             timeOfFlightMap.put(0.5, 1.2);

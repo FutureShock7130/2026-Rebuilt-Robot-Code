@@ -59,12 +59,12 @@ public class Robot extends TimedRobot {
             LimelightHelpers.PoseEstimate llRightMeasurement, llLeftMeasurement;
             llRightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
             llLeftMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
-            // if (llRightMeasurement != null && llRightMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-            //     m_robotContainer.drivetrain.addVisionMeasurement(llRightMeasurement.pose, llRightMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
-            // }
-            // if (llLeftMeasurement != null && llLeftMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-            //     m_robotContainer.drivetrain.addVisionMeasurement(llLeftMeasurement.pose, llLeftMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
-            // }
+            if (llRightMeasurement != null && llRightMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+                m_robotContainer.drivetrain.addVisionMeasurement(llRightMeasurement.pose, llRightMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
+            }
+            if (llLeftMeasurement != null && llLeftMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+                m_robotContainer.drivetrain.addVisionMeasurement(llLeftMeasurement.pose, llLeftMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
+            }
         }
 
         SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime());

@@ -92,10 +92,15 @@ public class RobotContainer {
             Commands.parallel(
                 Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds)).withName("ShootWithAim"),
                 Commands.waitSeconds(0.1).andThen(intake.toFeedingState())
-            ).withTimeout(3.5)
+            ).withTimeout(2.5)
+        );
+        NamedCommands.registerCommand(
+            "Aim",
+            Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> true, () -> false, () -> false, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds)).withName("Aim")
+            .withTimeout(1.5)
         );
 
-        new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(40, 32)).withName("Accel"));
+        new EventTrigger("Accel").whileTrue(Commands.run(()  -> shooter.setSpeed(40, 32)).withName("Accel"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
