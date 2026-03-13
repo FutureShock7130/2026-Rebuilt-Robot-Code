@@ -60,9 +60,10 @@ public class RobotContainer {
     private final ShooterIndexer shooterIndexer = new ShooterIndexer(
         shooter,
         indexer,
-        () -> joystick.getHID().getRightBumperButton(),
+        joystick.rightBumper(),
         () -> joystick.getHID().getRightTriggerAxis() > 0.5,
-        () -> drivetrain.getState().Pose
+        () -> drivetrain.getState().Pose,
+        () -> drivetrain.getState().Speeds
     );
 
     private final ManualShooterIndexer manualShooterIndexer = new ManualShooterIndexer(
@@ -87,7 +88,7 @@ public class RobotContainer {
         NamedCommands.registerCommand(
             "Shoot", 
             Commands.parallel(
-                Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose)),
+                Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds)),
                 Commands.waitSeconds(1.0).andThen(intake.toDefaultState())
             ).withTimeout(2.0)
         );
@@ -140,13 +141,14 @@ public class RobotContainer {
         joystick.leftTrigger().whileTrue(intake.intake());
         joystick.povUp().whileTrue(intake.outTake());
         joystick.povDown().onTrue(intake.toDefaultState());
+        joystick.povRight().onTrue(intake.toFeedingState());
 
         // joystick.a().onTrue(climber.toClimbPos());
         // joystick.b().onTrue(climber.toDefaultPose());
         // joystick.y().toggleOnTrue(climber.toPreClimbPos());
 
         // debug/test/manual mode trigger
-        joystick.povLeft().toggleOnTrue(testShooterIndexer);
+        // joystick.povLeft().toggleOnTrue(testShooterIndexer);
         operatorJoystick.start().onTrue(manualShooterIndexer);
         operatorJoystick.back().onTrue(shooterIndexer);
 

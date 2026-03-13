@@ -137,6 +137,10 @@ public class Intake extends SubsystemBase {
         ).withName("IntakeToDefaultState");
     }
 
+    public Command toFeedingState() {
+        return toDefaultState().withName("IntakeToFeedingState");
+    }
+
     public void registerTelemetry(DoubleConsumer telemetry) {
         this.telemetry = telemetry;
     }
