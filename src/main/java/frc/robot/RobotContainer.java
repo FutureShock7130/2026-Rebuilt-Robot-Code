@@ -61,7 +61,7 @@ public class RobotContainer {
         shooter,
         indexer,
         joystick.rightBumper(),
-        () -> joystick.getHID().getRightTriggerAxis() > 0.5,
+        joystick.rightTrigger(),
         () -> drivetrain.getState().Pose,
         () -> drivetrain.getState().Speeds
     );
@@ -117,7 +117,7 @@ public class RobotContainer {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(drive);
-        shooter.setDefaultCommand(testShooterIndexer);
+        shooter.setDefaultCommand(shooterIndexer);
         
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -147,7 +147,7 @@ public class RobotContainer {
         joystick.y().onTrue(climber.toDefaultPose());
 
         // debug/test/manual mode trigger
-        // joystick.povLeft().toggleOnTrue(testShooterIndexer);
+        joystick.povLeft().toggleOnTrue(testShooterIndexer);
         operatorJoystick.start().onTrue(manualShooterIndexer);
         operatorJoystick.back().onTrue(shooterIndexer);
 
