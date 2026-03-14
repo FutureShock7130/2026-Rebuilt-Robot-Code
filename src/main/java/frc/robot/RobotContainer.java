@@ -143,9 +143,8 @@ public class RobotContainer {
         joystick.povDown().onTrue(intake.toDefaultState());
         joystick.povRight().onTrue(intake.toFeedingState());
 
-        // joystick.a().onTrue(climber.toClimbPos());
-        // joystick.b().onTrue(climber.toDefaultPose());
-        // joystick.y().toggleOnTrue(climber.toPreClimbPos());
+        joystick.x().onTrue(climber.toPreClimbPos());
+        joystick.y().onTrue(climber.toDefaultPose());
 
         // debug/test/manual mode trigger
         // joystick.povLeft().toggleOnTrue(testShooterIndexer);
