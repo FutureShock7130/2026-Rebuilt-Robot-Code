@@ -289,7 +289,7 @@
               "period": 0.033,
               "data_type": "double",
               "time_display_mode": "Minutes and Seconds",
-              "red_start_time": 20,
+              "red_start_time": 30,
               "yellow_start_time": 30
             }
           },

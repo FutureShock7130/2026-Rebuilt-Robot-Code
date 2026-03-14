@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
             }
         }
 
-        SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime() + 1.0);
+        SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime() - getShiftLeftTime() + 1.0);
         SmartDashboard.putNumber("RobotVoltage", RobotController.getBatteryVoltage());
         SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     }
@@ -137,4 +137,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {}
+
+    public double getShiftLeftTime() {
+        double curr = Timer.getMatchTime();
+        if (curr > 130) return 130.0;
+        if (curr > 105) return 105.0;
+        if (curr > 80) return 80.0;
+        if (curr > 55) return 55.0;
+        if (curr > 30) return 30.0;
+        return 0.0;
+    }
 }
