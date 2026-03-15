@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.AlignTower;
 import frc.robot.commands.ManualShooterIndexer;
 import frc.robot.commands.ShooterIndexer;
 import frc.robot.commands.SwerveWithAim;
@@ -55,6 +56,13 @@ public class RobotContainer {
         () -> MathUtil.copyDirectionPow(-joystick.getLeftX(), 2.0) * kMaxSpeed,
         () -> -joystick.getRightX() * kMaxAngularRate * SmartDashboard.getNumber("AngularRate", 1.0),
         joystick.rightBumper()
+    );
+
+    private final AlignTower autoClimb = new AlignTower(
+        drivetrain,
+        () -> MathUtil.copyDirectionPow(-joystick.getLeftY(), 2.0) * kMaxSpeed / 3.0,
+        () -> MathUtil.copyDirectionPow(-joystick.getLeftX(), 2.0) * kMaxSpeed / 3.0,
+        () -> -joystick.getRightX()
     );
 
     private final ShooterIndexer shooterIndexer = new ShooterIndexer(
@@ -143,8 +151,8 @@ public class RobotContainer {
         joystick.povDown().onTrue(intake.toDefaultState());
         joystick.povRight().onTrue(intake.toFeedingState());
 
-        joystick.x().onTrue(climber.toPreClimbPos());
-        joystick.y().onTrue(climber.toDefaultPose());
+        joystick.x().onTrue(climber.toPreClimbPos()).toggleOnTrue(autoClimb);
+        joystick.y().onTrue(climber.toDefaultPose()).toggleOnTrue(autoClimb);
 
         // debug/test/manual mode trigger
         joystick.povLeft().toggleOnTrue(testShooterIndexer);
