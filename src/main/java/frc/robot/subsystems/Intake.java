@@ -5,18 +5,23 @@ import static frc.robot.Constants.IntakeConstants.*;
 
 import java.util.function.DoubleConsumer;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -32,11 +37,13 @@ public class Intake extends SubsystemBase {
     private final TalonFX angleMotor = new TalonFX(kAngleMotorId, Constants.kCanivoreBus);
     private final TalonFX intakeMotor = new TalonFX(kIntakeMotorId, Constants.kCanivoreBus);
 
+    private final CANcoder angleCancoder = new CANcoder(kAngleCancoderId, Constants.kCanivoreBus);
+
     private final DynamicMotionMagicVoltage angleRequest = new DynamicMotionMagicVoltage(0.0, 0.5, 2.5).withEnableFOC(true);
 
     private DoubleConsumer telemetry;
 
-    private static final double kGearRatio = kSensorToAngleRatio;
+    private static final double kGearRatio = kRotorToSensorRatio;
     private final DCMotorSim m_motorSimModel = new DCMotorSim(
         LinearSystemId.createDCMotorSystem(
             DCMotor.getKrakenX60Foc(1), 0.02, kGearRatio
@@ -69,7 +76,10 @@ public class Intake extends SubsystemBase {
             )
             .withFeedback(
                 new FeedbackConfigs()
-                    .withSensorToMechanismRatio(kSensorToAngleRatio)
+                    .withFeedbackRemoteSensorID(angleCancoder.getDeviceID())
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+                    .withSensorToMechanismRatio(1.0)
+                    .withRotorToSensorRatio(kRotorToSensorRatio)
             )
             .withMotorOutput(
                 new MotorOutputConfigs()
@@ -97,6 +107,15 @@ public class Intake extends SubsystemBase {
 
         PhoenixUtil.assertOk(angleMotor, () -> angleMotor.getConfigurator().apply(angleMotorConfig));
         angleMotor.setPosition(kAngleMin);
+
+        CANcoderConfiguration angleCancoderConfig = new CANcoderConfiguration()
+            .withMagnetSensor(
+                new MagnetSensorConfigs()
+                    .withAbsoluteSensorDiscontinuityPoint(1.0)
+                    .withMagnetOffset(kAngleCancoderOffset)
+                    .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+            );
+        angleCancoder.getConfigurator().apply(angleCancoderConfig);
 
         var motorSimState = angleMotor.getSimState();
         motorSimState.Orientation = ChassisReference.Clockwise_Positive;
