@@ -51,6 +51,8 @@ public class Constants {
     public static final class IndexerConstants {
         public static final int kUpIndexId = 44;
         public static final int kDownIndexId = 43;
+
+        public static final double kIndexingSpeed = 0.65;
     }
 
     public static final class IntakeConstants {
@@ -64,7 +66,7 @@ public class Constants {
         public static final double kSensorToAngleRatio = 25.0;
 
         public static final double kIntakeAngle = 0.46;
-        public static final double kIntakeSpeed = 0.6;
+        public static final double kIntakeSpeed = 1.0;
         public static final double kIntakeVoltage = 12.0;
         public static final double kDefaultAngle = 0.72;
 
@@ -77,7 +79,7 @@ public class Constants {
         public static final int kDownShooterId = 55;
         public static final int kDownShooter2Id = 62;
 
-        public static final double kAngleMax = 0.051;
+        public static final double kAngleMax = 0.0522;
         public static final double kAngleMin = 0;
 
         public static final double kSensorToAngleRatio = 162.0;
@@ -92,27 +94,31 @@ public class Constants {
         static {
             angleMap.put(0.0, 0.0);
             angleMap.put(1.5, 0.02);
-            angleMap.put(2.3, 0.04);
+            angleMap.put(2.0, 0.035);
+            angleMap.put(2.5, 0.0375);
             angleMap.put(3.0, 0.045);
             angleMap.put(4.0, 0.05);
-            angleMap.put(5.0, 0.05);
-            angleMap.put(5.5, 0.05);
-            angleMap.put(6.0, 0.05);
+            angleMap.put(4.5, 0.052);
+            angleMap.put(5.0, 0.052);
+            angleMap.put(5.5, 0.052);
+            angleMap.put(6.0, 0.052);
 
             upSpeedMap.put(0.0, 22.0);
             upSpeedMap.put(1.5, 23.0);
-            upSpeedMap.put(2.3, 24.0);
+            upSpeedMap.put(2.0, 24.0);
             upSpeedMap.put(3.0, 24.0);
             upSpeedMap.put(4.0, 24.0);
             upSpeedMap.put(5.0, 25.0);
             upSpeedMap.put(6.0, 28.0);
 
-            downSpeedMap.put(0.0, 30.0);
-            downSpeedMap.put(1.5, 33.5);
-            downSpeedMap.put(2.3, 36.0);
-            downSpeedMap.put(3.0, 40.0);
-            downSpeedMap.put(3.5, 44.0);
-            downSpeedMap.put(4.0, 46.5);
+            downSpeedMap.put(0.0, 33.0);
+            downSpeedMap.put(1.5, 33.0);
+            downSpeedMap.put(2.0, 35.75);
+            downSpeedMap.put(2.5, 36.75);
+            downSpeedMap.put(3.0, 39.25);
+            downSpeedMap.put(3.5, 43.0);
+            downSpeedMap.put(4.0, 46.25);
+            downSpeedMap.put(4.5, 50.75);
             downSpeedMap.put(5.0, 54.0);
             downSpeedMap.put(6.0, 60.0);
 

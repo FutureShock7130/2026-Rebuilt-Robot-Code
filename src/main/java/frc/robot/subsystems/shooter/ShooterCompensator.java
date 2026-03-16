@@ -69,6 +69,8 @@ public class ShooterCompensator {
 
         boolean isReachable = lookaheadDistance >= MIN_DIST && lookaheadDistance <= MAX_DIST;
 
+        System.out.println(lookaheadDistance);
+
         double targetAngle = angleMap.get(lookaheadDistance);
         double targetUpSpeed = upSpeedMap.get(lookaheadDistance);
         double targetDownSpeed = downSpeedMap.get(lookaheadDistance);

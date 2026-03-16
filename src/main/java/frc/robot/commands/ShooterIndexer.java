@@ -3,6 +3,7 @@ package frc.robot.commands;
 import static frc.robot.Constants.FieldConstants.kHubLocation;
 import static frc.robot.Constants.FieldConstants.kTransportTarget_Left;
 import static frc.robot.Constants.FieldConstants.kTransportTarget_Right;
+import static frc.robot.Constants.IndexerConstants.kIndexingSpeed;
 import static frc.robot.Constants.IntakeConstants.kIntakeVoltage;
 import static frc.robot.Constants.FieldConstants.kLeftTrenchStartPoint_Blue;
 import static frc.robot.Constants.FieldConstants.kRightTrenchStartPoint_Blue;
@@ -70,7 +71,7 @@ public class ShooterIndexer extends Command {
             shooter.setSpeed(solution.shooterUpSpeed(), solution.shooterDownSpeed());
 
             if (doShootSupplier.getAsBoolean()) {
-                indexer.set(0.5, 0.5);
+                indexer.set(kIndexingSpeed, kIndexingSpeed);
             } else {
                 indexer.set(0, 0);
             }
@@ -81,7 +82,7 @@ public class ShooterIndexer extends Command {
             shooter.setAngle(solution_Transport.shooterAngle());
             shooter.setSpeed(solution_Transport.shooterUpSpeed(), solution_Transport.shooterDownSpeed());
             if (doShootSupplier.getAsBoolean()) {
-                indexer.set(0.5, 0.5);
+                indexer.set(kIndexingSpeed, kIndexingSpeed);
             } else {
                 indexer.set(0, 0);
             }

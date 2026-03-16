@@ -90,7 +90,7 @@ public class Shooter extends SubsystemBase {
             .withSlot0(
                 new Slot0Configs()
                     .withKG(0.3).withKS(0.0).withKV(15.0).withKA(0.05)
-                    .withKP(100.0).withKI(1).withKD(0)
+                    .withKP(100.0).withKI(1.5).withKD(0)
                     .withGravityType(GravityTypeValue.Arm_Cosine)
                     .withGravityArmPositionOffset(0.02)
             )

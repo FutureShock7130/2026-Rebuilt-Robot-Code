@@ -26,12 +26,6 @@
         {
           "type": "named",
           "data": {
-            "name": "Aim"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Shoot"
           }
         },
@@ -52,12 +46,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Aim"
           }
         },
         {
