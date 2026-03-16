@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.IntakeConstants.*;
 
 import java.util.function.DoubleConsumer;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -13,10 +15,13 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -29,6 +34,7 @@ import frc.FSLib.util.PhoenixUtil;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
+    private final CANcoder angleEncoder = new CANcoder(kIntakeEncoderId, Constants.kCanivoreBus);
     private final TalonFX angleMotor = new TalonFX(kAngleMotorId, Constants.kCanivoreBus);
     private final TalonFX intakeMotor = new TalonFX(kIntakeMotorId, Constants.kCanivoreBus);
 
@@ -46,6 +52,13 @@ public class Intake extends SubsystemBase {
 
 
     public Intake() {
+        CANcoderConfiguration angleEncoderConfig = new CANcoderConfiguration();
+        angleEncoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1.0;
+        angleEncoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
+        angleEncoderConfig.MagnetSensor.withMagnetOffset(Rotations.of(0.0));
+        angleEncoder.getConfigurator().apply(angleEncoderConfig);
+        PhoenixUtil.assertOk(angleEncoder, () -> angleEncoder.getConfigurator().apply(angleEncoderConfig));
+
         TalonFXConfiguration intakeMotorConfig = new TalonFXConfiguration();
         intakeMotorConfig.MotorOutput
             .withInverted(InvertedValue.CounterClockwise_Positive)
@@ -55,6 +68,11 @@ public class Intake extends SubsystemBase {
             .withSupplyCurrentLimit(20)
             .withSupplyCurrentLowerLimit(20)
             .withSupplyCurrentLowerTime(0.0);
+        intakeMotorConfig.withSlot0(
+                new Slot0Configs()
+                    .withKG(0.0).withKS(0.39397).withKV(2.6341).withKA(0.1969)
+                    .withKP(3.4432).withKI(0.0).withKD(0)
+            );
 
         PhoenixUtil.assertOk(intakeMotor, () -> intakeMotor.getConfigurator().apply(intakeMotorConfig));
 
@@ -69,7 +87,10 @@ public class Intake extends SubsystemBase {
             )
             .withFeedback(
                 new FeedbackConfigs()
-                    .withSensorToMechanismRatio(kSensorToAngleRatio)
+                    .withSensorToMechanismRatio(1.0)
+                    .withFeedbackRemoteSensorID(angleEncoder.getDeviceID())
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+                    .withRotorToSensorRatio(kSensorToAngleRatio)
             )
             .withMotorOutput(
                 new MotorOutputConfigs()
@@ -82,21 +103,20 @@ public class Intake extends SubsystemBase {
             )
             .withSlot0(
                 new Slot0Configs()
-                    .withKG(0.1).withKS(0.1).withKV(16.0).withKA(0.1)
-                    .withKP(30.0).withKI(0.1).withKD(0)
+                    .withKG(0.02).withKS(0.02).withKV(2.5).withKA(0.02)
+                    .withKP(16.0).withKI(0.15).withKD(0.57)
                     .withGravityType(GravityTypeValue.Arm_Cosine)
                     .withGravityArmPositionOffset(kAngleMax)
             )
             .withSoftwareLimitSwitch(
                 new SoftwareLimitSwitchConfigs()
                     .withForwardSoftLimitEnable(true)
-                    .withForwardSoftLimitThreshold(kAngleMax)
+                    .withForwardSoftLimitThreshold(kAngleMin)
                     .withReverseSoftLimitEnable(true)
-                    .withReverseSoftLimitThreshold(kAngleMin)
+                    .withReverseSoftLimitThreshold(kAngleMax)
             );
 
         PhoenixUtil.assertOk(angleMotor, () -> angleMotor.getConfigurator().apply(angleMotorConfig));
-        angleMotor.setPosition(kAngleMin);
 
         var motorSimState = angleMotor.getSimState();
         motorSimState.Orientation = ChassisReference.Clockwise_Positive;

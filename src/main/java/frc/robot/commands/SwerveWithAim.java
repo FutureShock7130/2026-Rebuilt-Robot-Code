@@ -114,13 +114,13 @@ public class SwerveWithAim extends Command {
             Rotation2d angle = AllianceFlipUtil.flip(AllianceFlipUtil.flip(kHubLocation)
                     .minus(robotPose.getTranslation()).getAngle());
 
-            if (Math.abs(compensatedAngle.getDegrees() - robotPose.getRotation().getDegrees()) > 1.5
+            if (Math.abs(compensatedAngle.getDegrees() - robotPose.getRotation().getDegrees()) > 1
                     || Math.abs(xSpeedSupplier.getAsDouble()) > 0
                     || Math.abs(ySpeedSupplier.getAsDouble()) > 0) {
 
                 drivetrain.setControl(
-                        driveAngle.withVelocityX(xSpeedSupplier.getAsDouble() * 0.5)
-                                .withVelocityY(ySpeedSupplier.getAsDouble() * 0.5)
+                        driveAngle.withVelocityX(xSpeedSupplier.getAsDouble() * 0.2)
+                                .withVelocityY(ySpeedSupplier.getAsDouble() * 0.2)
                                 .withTargetDirection(compensatedAngle));
             } else {
                 drivetrain.setControl(brake);

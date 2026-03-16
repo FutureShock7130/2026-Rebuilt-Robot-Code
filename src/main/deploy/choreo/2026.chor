@@ -1,0 +1,127 @@
+{
+ "name":"2026",
+ "version":2,
+ "type":"Swerve",
+ "variables":{
+  "expressions":{},
+  "poses":{
+   "LeftShoot":{
+    "x":{
+     "exp":"2.1 m",
+     "val":2.1
+    },
+    "y":{
+     "exp":"5.92 m",
+     "val":5.92
+    },
+    "heading":{
+     "exp":"-45 deg",
+     "val":-0.7853981633974483
+    }
+   },
+   "Outpost":{
+    "x":{
+     "exp":"0.43 m",
+     "val":0.43
+    },
+    "y":{
+     "exp":"0.635 m",
+     "val":0.635
+    },
+    "heading":{
+     "exp":"0 deg",
+     "val":0.0
+    }
+   },
+   "RightShoot":{
+    "x":{
+     "exp":"2.9 m",
+     "val":2.9
+    },
+    "y":{
+     "exp":"2.5 m",
+     "val":2.5
+    },
+    "heading":{
+     "exp":"45 deg",
+     "val":0.7853981633974483
+    }
+   }
+  }
+ },
+ "config":{
+  "frontLeft":{
+   "x":{
+    "exp":"0.2793 m",
+    "val":0.2793
+   },
+   "y":{
+    "exp":"0.2825 m",
+    "val":0.2825
+   }
+  },
+  "backLeft":{
+   "x":{
+    "exp":"-0.2793 m",
+    "val":-0.2793
+   },
+   "y":{
+    "exp":"0.2825 m",
+    "val":0.2825
+   }
+  },
+  "mass":{
+   "exp":"61.4 kg",
+   "val":61.4
+  },
+  "inertia":{
+   "exp":"6 kg m ^ 2",
+   "val":6.0
+  },
+  "gearing":{
+   "exp":"6.027",
+   "val":6.027
+  },
+  "radius":{
+   "exp":"2 in",
+   "val":0.0508
+  },
+  "vmax":{
+   "exp":"5600 RPM",
+   "val":586.4306286700947
+  },
+  "tmax":{
+   "exp":"1.2 N * m",
+   "val":1.2
+  },
+  "cof":{
+   "exp":"1.2",
+   "val":1.2
+  },
+  "bumper":{
+   "front":{
+    "exp":"0.4318 m",
+    "val":0.4318
+   },
+   "side":{
+    "exp":"0.4318 m",
+    "val":0.4318
+   },
+   "back":{
+    "exp":"0.4318 m",
+    "val":0.4318
+   }
+  },
+  "differentialTrackWidth":{
+   "exp":"22 in",
+   "val":0.5588
+  }
+ },
+ "generationFeatures":[],
+ "codegen":{
+  "root":"Choreo Paths",
+  "genVars":true,
+  "genTrajData":true,
+  "useChoreoLib":true
+ }
+}

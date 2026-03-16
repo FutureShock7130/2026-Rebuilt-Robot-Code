@@ -16,6 +16,18 @@ public class Constants {
     public static final double kMaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double kMaxAngularRate = RotationsPerSecond.of(1.5).in(RadiansPerSecond);
 
+    /*
+     * LL3 front = 0.0224
+     * LL3 right = 0.114
+     * LL3 up = 0.5247
+     * LL3 pitch = 20
+     * 
+     * LL2 front = 0.015
+     * LL2 right = -0.0296
+     * LL2 up = 0.5223
+     * LL2 yaw = 35
+     */
+
     public static final class FieldConstants {
         public static final Translation2d kHubLocation = new Translation2d(4.625, 4.034);
         public static final Translation2d kTransportTarget_Left = new Translation2d(1.387, 6.487);
@@ -44,16 +56,19 @@ public class Constants {
     public static final class IntakeConstants {
         public static final int kAngleMotorId = 61;
         public static final int kIntakeMotorId = 60;
+        public static final int kIntakeEncoderId = 62;
 
-        public static final double kAngleMax = 0.0;
-        public static final double kAngleMin = -0.28167;
+        public static final double kAngleMax = 0.45; // 0.0
+        public static final double kAngleMin = 0.78; // -0.28167
 
-        public static final double kSensorToAngleRatio = 135.0;
+        public static final double kSensorToAngleRatio = 25.0;
 
-        public static final double kIntakeAngle = 0.0;
-        public static final double kIntakeSpeed = 1.0;
+        public static final double kIntakeAngle = 0.46;
+        public static final double kIntakeSpeed = 0.6;
         public static final double kIntakeVoltage = 12.0;
-        public static final double kDefaultAngle = -0.29;
+        public static final double kDefaultAngle = 0.72;
+
+        public static final double kAngleEncoderOffset = 0.0;
     }
 
     public static final class ShooterConstants {
@@ -62,12 +77,12 @@ public class Constants {
         public static final int kDownShooterId = 55;
         public static final int kDownShooter2Id = 62;
 
-        public static final double kAngleMax = 0.067;
+        public static final double kAngleMax = 0.051;
         public static final double kAngleMin = 0;
 
-        public static final double kSensorToAngleRatio = 150.0;
+        public static final double kSensorToAngleRatio = 162.0;
         public static final double kSensorToUpShooterRatio = 3.0;
-        public static final double kSensorToDownShooterRatio = 1.8;
+        public static final double kSensorToDownShooterRatio = 0.5;
 
         public static final InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
         public static final InterpolatingDoubleTreeMap upSpeedMap = new InterpolatingDoubleTreeMap();
@@ -76,29 +91,30 @@ public class Constants {
 
         static {
             angleMap.put(0.0, 0.0);
-            angleMap.put(1.4, 0.02);
-            angleMap.put(2.3, 0.0325);
-            angleMap.put(3.0, 0.0525);
-            angleMap.put(4.0, 0.063);
-            angleMap.put(5.0, 0.0632);
-            angleMap.put(5.5, 0.0635);
-            angleMap.put(6.0, 0.065);
+            angleMap.put(1.5, 0.02);
+            angleMap.put(2.3, 0.04);
+            angleMap.put(3.0, 0.045);
+            angleMap.put(4.0, 0.05);
+            angleMap.put(5.0, 0.05);
+            angleMap.put(5.5, 0.05);
+            angleMap.put(6.0, 0.05);
 
             upSpeedMap.put(0.0, 22.0);
-            upSpeedMap.put(1.4, 23.0);
+            upSpeedMap.put(1.5, 23.0);
             upSpeedMap.put(2.3, 24.0);
             upSpeedMap.put(3.0, 24.0);
-            upSpeedMap.put(4.0, 25.0);
-            upSpeedMap.put(5.0, 27.0);
-            upSpeedMap.put(6.0, 33.0);
+            upSpeedMap.put(4.0, 24.0);
+            upSpeedMap.put(5.0, 25.0);
+            upSpeedMap.put(6.0, 28.0);
 
-            downSpeedMap.put(0.0, 33.5);
-            downSpeedMap.put(1.4, 35.0);
-            downSpeedMap.put(2.3, 36.5);
-            downSpeedMap.put(3.0, 38.5);
-            downSpeedMap.put(4.0, 42.0);
-            downSpeedMap.put(5.0, 47.0);
-            downSpeedMap.put(6.0, 51.0);
+            downSpeedMap.put(0.0, 30.0);
+            downSpeedMap.put(1.5, 33.5);
+            downSpeedMap.put(2.3, 36.0);
+            downSpeedMap.put(3.0, 40.0);
+            downSpeedMap.put(3.5, 44.0);
+            downSpeedMap.put(4.0, 46.5);
+            downSpeedMap.put(5.0, 54.0);
+            downSpeedMap.put(6.0, 60.0);
 
             timeOfFlightMap.put(0.5, 1.2);
             timeOfFlightMap.put(1.0, 1.4);

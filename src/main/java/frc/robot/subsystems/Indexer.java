@@ -2,7 +2,9 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.IndexerConstants.*;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -15,14 +17,26 @@ public class Indexer extends SubsystemBase {
     private final TalonFX upIndex = new TalonFX(kUpIndexId, Constants.kCanivoreBus);
     private final TalonFX downIndex = new TalonFX(kDownIndexId, Constants.kCanivoreBus);
 
+    private final MotionMagicVelocityVoltage upIndexerRequeset = new MotionMagicVelocityVoltage(0)
+        .withEnableFOC(true)
+        .withUseTimesync(true)
+        .withUpdateFreqHz(0);
+    private final MotionMagicVelocityVoltage downIndexerRequeset = new MotionMagicVelocityVoltage(0)
+        .withEnableFOC(true)
+        .withUseTimesync(true)
+        .withUpdateFreqHz(0);
+
     public Indexer() {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.MotorOutput
-            .withNeutralMode(NeutralModeValue.Brake)
+            .withNeutralMode(NeutralModeValue.Coast)
             .withInverted(InvertedValue.Clockwise_Positive);
         config.CurrentLimits
             .withStatorCurrentLimit(80)
             .withSupplyCurrentLimit(40);
+        config.MotionMagic
+                    .withMotionMagicAcceleration(80)
+                    .withMotionMagicJerk(400);
         PhoenixUtil.assertOk(upIndex, () -> upIndex.getConfigurator().apply(config));
 
         config.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
@@ -32,6 +46,8 @@ public class Indexer extends SubsystemBase {
     public void set(double upSpeed, double downSpeed) {
         upIndex.set(upSpeed);
         downIndex.set(downSpeed);
+        // upIndex.setControl(upIndexerRequeset.withVelocity(upRPS));
+        // downIndex.setControl(downIndexerRequeset.withVelocity(downRPS));
     }
 
     public void setVolt(double upVolts, double downVolts) {

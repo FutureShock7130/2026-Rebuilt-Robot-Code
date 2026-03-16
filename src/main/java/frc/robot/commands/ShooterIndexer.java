@@ -70,9 +70,9 @@ public class ShooterIndexer extends Command {
             shooter.setSpeed(solution.shooterUpSpeed(), solution.shooterDownSpeed());
 
             if (doShootSupplier.getAsBoolean()) {
-                indexer.setVolt(kIntakeVoltage, kIntakeVoltage);
+                indexer.set(0.5, 0.5);
             } else {
-                indexer.setVolt(0.0, 0.0);
+                indexer.set(0, 0);
             }
         } else if (doTransportSupplier.getAsBoolean()) {
             SolvingParameters solvingParameters_Transport= new SolvingParameters(AllianceFlipUtil.flip(robotPoseSupplier.get()), chassisSpeeds.get(),
@@ -81,14 +81,14 @@ public class ShooterIndexer extends Command {
             shooter.setAngle(solution_Transport.shooterAngle());
             shooter.setSpeed(solution_Transport.shooterUpSpeed(), solution_Transport.shooterDownSpeed());
             if (doShootSupplier.getAsBoolean()) {
-                indexer.setVolt(kIntakeVoltage, kIntakeVoltage);
+                indexer.set(0.5, 0.5);
             } else {
-                indexer.setVolt(0.0, 0.0);
+                indexer.set(0, 0);
             }
         } else {
             shooter.setAngle(0.0);
             shooter.setSpeed(0.0, 0.0);
-            indexer.setVolt(0.0, 0.0);
+            indexer.set(0, 0);
         }
     }
 
