@@ -52,7 +52,7 @@ public class Constants {
         public static final int kUpIndexId = 44;
         public static final int kDownIndexId = 43;
 
-        public static final double kIndexingSpeed = 0.65;
+        public static final double kIndexingSpeed = 0.635;
     }
 
     public static final class IntakeConstants {
@@ -97,7 +97,7 @@ public class Constants {
             angleMap.put(2.0, 0.035);
             angleMap.put(2.5, 0.0375);
             angleMap.put(3.0, 0.045);
-            angleMap.put(4.0, 0.05);
+            angleMap.put(4.0, 0.052);
             angleMap.put(4.5, 0.052);
             angleMap.put(5.0, 0.052);
             angleMap.put(5.5, 0.052);
@@ -115,8 +115,8 @@ public class Constants {
             downSpeedMap.put(1.5, 33.0);
             downSpeedMap.put(2.0, 35.75);
             downSpeedMap.put(2.5, 36.75);
-            downSpeedMap.put(3.0, 39.25);
-            downSpeedMap.put(3.5, 43.0);
+            downSpeedMap.put(3.0, 39.45);
+            downSpeedMap.put(3.5, 42.5);
             downSpeedMap.put(4.0, 46.25);
             downSpeedMap.put(4.5, 50.75);
             downSpeedMap.put(5.0, 54.0);
