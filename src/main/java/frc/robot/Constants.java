@@ -66,7 +66,7 @@ public class Constants {
         public static final double kSensorToAngleRatio = 25.0;
 
         public static final double kIntakeAngle = 0.3;
-        public static final double kIntakeSpeed = 0.6;
+        public static final double kIntakeSpeed = 0.4;
         public static final double kIntakeVoltage = 12.0;
         public static final double kDefaultAngle = 0.57;
 
