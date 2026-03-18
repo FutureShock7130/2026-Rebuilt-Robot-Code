@@ -52,7 +52,7 @@ public class Constants {
         public static final int kUpIndexId = 44;
         public static final int kDownIndexId = 43;
 
-        public static final double kIndexingSpeed = 0.635;
+        public static final double kIndexingSpeed = 0.63;
     }
 
     public static final class IntakeConstants {
@@ -60,15 +60,15 @@ public class Constants {
         public static final int kIntakeMotorId = 60;
         public static final int kIntakeEncoderId = 62;
 
-        public static final double kAngleMax = 0.45; // 0.0
-        public static final double kAngleMin = 0.78; // -0.28167
+        public static final double kAngleMax = 0.296; // 0.0
+        public static final double kAngleMin = 0.611; // -0.28167
 
         public static final double kSensorToAngleRatio = 25.0;
 
-        public static final double kIntakeAngle = 0.46;
-        public static final double kIntakeSpeed = 1.0;
+        public static final double kIntakeAngle = 0.3;
+        public static final double kIntakeSpeed = 0.6;
         public static final double kIntakeVoltage = 12.0;
-        public static final double kDefaultAngle = 0.72;
+        public static final double kDefaultAngle = 0.57;
 
         public static final double kAngleEncoderOffset = 0.0;
     }

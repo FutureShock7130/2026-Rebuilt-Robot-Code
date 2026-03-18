@@ -4,112 +4,69 @@
  "type":"Swerve",
  "variables":{
   "expressions":{},
-  "poses":{
-   "LeftShoot":{
-    "x":{
-     "exp":"2.95 m",
-     "val":2.95
-    },
-    "y":{
-     "exp":"5.48 m",
-     "val":5.48
-    },
-    "heading":{
-     "exp":"-45 deg",
-     "val":-0.7853981633974483
-    }
-   },
-   "Outpost":{
-    "x":{
-     "exp":"0.43 m",
-     "val":0.43
-    },
-    "y":{
-     "exp":"0.635 m",
-     "val":0.635
-    },
-    "heading":{
-     "exp":"0 deg",
-     "val":0.0
-    }
-   },
-   "RightShoot":{
-    "x":{
-     "exp":"2.9 m",
-     "val":2.9
-    },
-    "y":{
-     "exp":"2.5 m",
-     "val":2.5
-    },
-    "heading":{
-     "exp":"45 deg",
-     "val":0.7853981633974483
-    }
-   }
-  }
+  "poses":{}
  },
  "config":{
   "frontLeft":{
    "x":{
-    "exp":"0.2793 m",
-    "val":0.2793
+    "exp":"11 in",
+    "val":0.2794
    },
    "y":{
-    "exp":"0.2825 m",
-    "val":0.2825
+    "exp":"11 in",
+    "val":0.2794
    }
   },
   "backLeft":{
    "x":{
-    "exp":"-0.2793 m",
-    "val":-0.2793
+    "exp":"-11 in",
+    "val":-0.2794
    },
    "y":{
-    "exp":"0.2825 m",
-    "val":0.2825
+    "exp":"11 in",
+    "val":0.2794
    }
   },
   "mass":{
-   "exp":"61.4 kg",
-   "val":61.4
+   "exp":"150 lbs",
+   "val":68.0388555
   },
   "inertia":{
    "exp":"6 kg m ^ 2",
    "val":6.0
   },
   "gearing":{
-   "exp":"6.027",
-   "val":6.027
+   "exp":"6.5",
+   "val":6.5
   },
   "radius":{
    "exp":"2 in",
    "val":0.0508
   },
   "vmax":{
-   "exp":"3000 RPM",
-   "val":314.1592653589793
+   "exp":"6000 RPM",
+   "val":628.3185307179587
   },
   "tmax":{
    "exp":"1.2 N * m",
    "val":1.2
   },
   "cof":{
-   "exp":"1.2",
-   "val":1.2
+   "exp":"1.5",
+   "val":1.5
   },
   "bumper":{
    "front":{
-    "exp":"0.4318 m",
-    "val":0.4318
+    "exp":"16 in",
+    "val":0.4064
    },
    "side":{
-    "exp":"0.4318 m",
-    "val":0.4318
+    "exp":"16 in",
+    "val":0.4064
    },
    "back":{
-    "exp":"0.4318 m",
-    "val":0.4318
+    "exp":"16 in",
+    "val":0.4064
    }
   },
   "differentialTrackWidth":{
@@ -119,7 +76,7 @@
  },
  "generationFeatures":[],
  "codegen":{
-  "root":"Choreo Paths",
+  "root":null,
   "genVars":true,
   "genTrajData":true,
   "useChoreoLib":true
