@@ -45,11 +45,12 @@ public class TestShooterIndexer extends Command {
         if (driverJoystick.getRightBumperButton()) {
             shooter.setSpeed(SmartDashboard.getNumber("TestShooter/UpSpeed", 0.0), SmartDashboard.getNumber("TestShooter/DownSpeed", 0.0));
         } else {
-            indexer.set(0, 0);
             shooter.setSpeed(0.0, 0.0);
         }
         if (driverJoystick.getRightTriggerAxis() > 0.5) {
             indexer.set(1.0, 1.0);
+        } else {
+            indexer.set(0, 0);
         }
 
         if (!recordResult && SmartDashboard.getBoolean("TestShooter/Record", false)) {
