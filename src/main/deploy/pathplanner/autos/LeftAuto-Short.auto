@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RightStartToMid4"
+                  "pathName": "LeftStartToMid1"
                 }
               },
               {
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Mid4ToRightShoot"
+            "pathName": "Mid1ToLeftShoot"
           }
         },
         {
@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RightShootToMid3"
+                  "pathName": "LeftShootToMid2"
                 }
               },
               {
@@ -57,38 +57,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MId3ToRightShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "RightShootToMid2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Mid2ToRightShoot"
+            "pathName": "Mid2ToLeftShoot"
           }
         },
         {
