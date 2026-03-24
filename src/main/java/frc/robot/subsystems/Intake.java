@@ -92,8 +92,8 @@ public class Intake extends SubsystemBase {
             )
             .withSlot0(
                 new Slot0Configs()
-                    .withKG(0.1).withKS(0.1).withKV(16.0).withKA(0.1)
-                    .withKP(30.0).withKI(0.1).withKD(0)
+                    .withKG(0.02).withKS(0.02).withKV(2.5).withKA(0.02)
+                    .withKP(16.0).withKI(0.15).withKD(0.57)
                     .withGravityType(GravityTypeValue.Arm_Cosine)
                     .withGravityArmPositionOffset(kAngleMax)
             )

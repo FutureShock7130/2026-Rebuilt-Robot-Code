@@ -121,8 +121,8 @@ public class Shooter extends SubsystemBase {
             )
             .withSlot0(
                 new Slot0Configs()
-                    .withKS(0.27354).withKV(0.37161).withKA(0.0056677)
-                    .withKP(0.50867).withKI(0.1).withKD(0)
+                    .withKS(0.27006).withKV(0.37283).withKA(0.0049632)
+                    .withKP(0.068434).withKI(0.05).withKD(0.0)
             );
         
         PhoenixUtil.assertOk(upShooter, () -> upShooter.getConfigurator().apply(upShooterConfig));
@@ -144,8 +144,8 @@ public class Shooter extends SubsystemBase {
             )
             .withSlot0(
                 new Slot0Configs()
-                    .withKS(0.22486).withKV(0.223).withKA(0.013321)
-                    .withKP(0.33013).withKI(0.1).withKD(0)
+                    .withKS(0.23895).withKV(0.06425).withKA(0.015212)
+                    .withKP(0.081285).withKI(0.004).withKD(0.0)
             );
         
         PhoenixUtil.assertOk(downShooter, () -> downShooter.getConfigurator().apply(downShooterConfig));
