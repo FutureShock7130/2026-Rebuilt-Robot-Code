@@ -1,5 +1,9 @@
 package frc.robot.commands;
 
+import static frc.robot.Constants.ShooterConstants.angleMap;
+import static frc.robot.Constants.ShooterConstants.upSpeedMap;
+import static frc.robot.Constants.ShooterConstants.downSpeedMap;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,19 +41,21 @@ public class ManualShooterIndexer extends Command {
             targetAngle -= 0.0003;
         }
 
-        if (operatorController.getAButtonPressed()) {
-            targetAngle = 0.05;
-        }
-
-        if (Math.abs(operatorController.getRightY()) > 0.1 || Math.abs(operatorController.getLeftY()) > 0.1) {
-            targetUpSpeed = operatorController.getRightY() * 32;
-            targetDownSpeed = operatorController.getLeftY() * 50;
-        } else if (operatorController.getBButtonPressed()) {
-            targetUpSpeed = 32;
-            targetDownSpeed = 50;
+        if (operatorController.getYButton()) {
+            targetAngle = angleMap.get(1.2);
+            targetUpSpeed = upSpeedMap.get(1.2);
+            targetDownSpeed = downSpeedMap.get(1.2);
+        } else if (operatorController.getXButton() || operatorController.getBButtonPressed()) {
+            targetAngle = angleMap.get(3.5);
+            targetUpSpeed = upSpeedMap.get(3.5);
+            targetDownSpeed = downSpeedMap.get(3.5);
+        } else if (operatorController.getAButton()) {
+            targetAngle = angleMap.get(3.05);
+            targetUpSpeed = upSpeedMap.get(3.05);
+            targetDownSpeed = downSpeedMap.get(3.05);
         } else {
-            targetUpSpeed = 0;
-            targetDownSpeed = 0;
+            targetUpSpeed = 0.0;
+            targetDownSpeed = 0.0;
         }
 
         targetAngle = MathUtil.clamp(targetAngle, ShooterConstants.kAngleMin, ShooterConstants.kAngleMax);
