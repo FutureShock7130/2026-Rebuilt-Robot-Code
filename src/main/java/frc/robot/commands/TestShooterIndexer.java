@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.FSLib.util.AllianceFlipUtil;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
 
@@ -48,7 +49,7 @@ public class TestShooterIndexer extends Command {
             shooter.setSpeed(0.0, 0.0);
         }
         if (driverJoystick.getRightTriggerAxis() > 0.5) {
-            indexer.set(1.0, 1.0);
+            indexer.set(IndexerConstants.kIndexingSpeed, IndexerConstants.kIndexingSpeed);
         } else {
             indexer.set(0, 0);
         }

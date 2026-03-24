@@ -7,6 +7,7 @@ import static frc.robot.Constants.ShooterConstants.downSpeedMap;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
@@ -64,7 +65,7 @@ public class ManualShooterIndexer extends Command {
         shooter.setSpeed(targetUpSpeed, targetDownSpeed);
 
         if (driverController.getRightTriggerAxis() > 0.5) {
-            indexer.set(1.0, 1.0);
+            indexer.set(IndexerConstants.kIndexingSpeed, IndexerConstants.kIndexingSpeed);
         } else {
             indexer.set(0.0, 0.0);
         }
