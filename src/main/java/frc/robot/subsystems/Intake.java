@@ -38,7 +38,7 @@ public class Intake extends SubsystemBase {
     private final TalonFX angleMotor = new TalonFX(kAngleMotorId, Constants.kCanivoreBus);
     private final TalonFX intakeMotor = new TalonFX(kIntakeMotorId, Constants.kCanivoreBus);
 
-    private final DynamicMotionMagicVoltage angleRequest = new DynamicMotionMagicVoltage(0.0, 0.5, 2.5).withEnableFOC(true);
+    private final DynamicMotionMagicVoltage angleRequest = new DynamicMotionMagicVoltage(0.0, 1.0, 2.5).withEnableFOC(true);
 
     private DoubleConsumer telemetry;
 
@@ -70,8 +70,8 @@ public class Intake extends SubsystemBase {
             .withSupplyCurrentLowerTime(0.0);
         intakeMotorConfig.withSlot0(
                 new Slot0Configs()
-                    .withKG(0.0).withKS(0.39397).withKV(2.6341).withKA(0.1969)
-                    .withKP(3.4432).withKI(0.0).withKD(0)
+                    .withKG(0.0).withKS(0.5).withKV(5.0).withKA(0.5)
+                    .withKP(6.9).withKI(0.5).withKD(0)
             );
 
         PhoenixUtil.assertOk(intakeMotor, () -> intakeMotor.getConfigurator().apply(intakeMotorConfig));
