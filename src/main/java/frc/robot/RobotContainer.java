@@ -111,6 +111,8 @@ public class RobotContainer {
         // Warmup PathPlanner to avoid Java pauses
         CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
 
+        CommandScheduler.getInstance().schedule(LEDCenter.getInstance().setOffState());
+
         SmartDashboard.putData("Subsystems/Climber", climber);
         SmartDashboard.putData("Subsystems/Indexer", indexer);
         SmartDashboard.putData("Subsystems/Intake", intake);
@@ -134,6 +136,8 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true).withName("SwerveIdle")
         );
 
+        RobotModeTriggers.disabled().whileTrue(LEDCenter.getInstance().setOffState());
+
         // RobotModeTriggers.teleop().onTrue(climber.toPreClimbPos());
 
         // Run SysId routines when holding back/start and X/Y.
@@ -146,7 +150,7 @@ public class RobotContainer {
         // Reset the field-centric heading on left bumper press.
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        joystick.leftTrigger().whileTrue(intake.intake());
+        joystick.leftTrigger().toggleOnTrue(intake.intake());
         joystick.povUp().whileTrue(intake.outTake());
         joystick.povDown().onTrue(intake.toDefaultState());
         joystick.povRight().onTrue(intake.toFeedingState());
