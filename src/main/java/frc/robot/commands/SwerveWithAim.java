@@ -119,8 +119,8 @@ public class SwerveWithAim extends Command {
                     || Math.abs(ySpeedSupplier.getAsDouble()) > 0) {
 
                 drivetrain.setControl(
-                        driveAngle.withVelocityX(xSpeedSupplier.getAsDouble() * 0.2)
-                                .withVelocityY(ySpeedSupplier.getAsDouble() * 0.2)
+                        driveAngle.withVelocityX(xSpeedSupplier.getAsDouble() * 0.3)
+                                .withVelocityY(ySpeedSupplier.getAsDouble() * 0.3)
                                 .withTargetDirection(compensatedAngle));
             } else {
                 drivetrain.setControl(brake);

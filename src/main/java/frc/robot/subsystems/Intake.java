@@ -64,9 +64,9 @@ public class Intake extends SubsystemBase {
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
         intakeMotorConfig.CurrentLimits
-            .withStatorCurrentLimit(40)
-            .withSupplyCurrentLimit(20)
-            .withSupplyCurrentLowerLimit(20)
+            .withStatorCurrentLimit(80)
+            .withSupplyCurrentLimit(30)
+            .withSupplyCurrentLowerLimit(30)
             .withSupplyCurrentLowerTime(0.0);
         intakeMotorConfig.withSlot0(
                 new Slot0Configs()
