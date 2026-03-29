@@ -20,8 +20,9 @@ public class Constants {
         public static final Translation2d kHubLocation = new Translation2d(4.625, 4.034);
         public static final Translation2d kLeftTransportTarget = new Translation2d(1.387, 6.487);
         public static final Translation2d kRightTransportTarget = new Translation2d(1.387, 1.367);
-        public static final Translation2d kLeftTrenchStartPoint = new Translation2d(3.1, 7.35);
-        public static final Translation2d kRightTrenchStartPoint = new Translation2d(3.1, 0.75);
+        public static final Translation2d kLeftTrenchStartPoint = new Translation2d(4.6, 7.47);
+        public static final Translation2d kRightTrenchStartPoint = new Translation2d(4.6, 0.6);
+        public static final Translation2d[] kTrenchPoses = new Translation2d[]{kRightTrenchStartPoint, kLeftTrenchStartPoint};
     }
 
     public static final class ClimberConstants {
@@ -48,17 +49,16 @@ public class Constants {
         public static final int kIntakeMotorId = 60;
         public static final int kAngleCancoderId = 62;
         
-        public static final double kAngleMax = 0.296;
-        public static final double kAngleMin = 0.611;
+        public static final double kAngleMax = 0.336426;
+        public static final double kAngleMin = 0.0;
 
         public static final double kRotorToSensorRatio = 60.0;
 
-        public static final double kIntakeAngle = 0.3;
+        public static final double kIntakeAngle = 0.0;
         public static final double kIntakeSpeed = 0.4;
-        public static final double kIntakeVoltage = 12.0;
-        public static final double kDefaultAngle = 0.57;
+        public static final double kDefaultAngle = 0.28;
 
-        public static final double kAngleCancoderOffset = 0.0;
+        public static final double kAngleCancoderOffset = -0.317626953125;
     }
 
     public static final class ShooterConstants {

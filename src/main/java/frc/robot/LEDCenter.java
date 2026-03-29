@@ -17,12 +17,12 @@ public class LEDCenter {
 
     private final LEDPattern defaultPattern = LEDPattern.solid(Color.kLightBlue);
     private final LEDPattern readyPattern = LEDPattern.solid(Color.kGreen);
-    private final LEDPattern shootingPattern = readyPattern.blink(Seconds.of(0.125));
-    private final LEDPattern intakingPattern = defaultPattern.blink(Seconds.of(0.125));
-    private LEDPattern patternToApply = LEDPattern.kOff;
+    private final LEDPattern shootingPattern = readyPattern.blink(Seconds.of(0.25));
+    private final LEDPattern intakingPattern = defaultPattern.blink(Seconds.of(0.25));
 
     private LEDCenter() {
         led.setLength(buffer.getLength());
+        led.start();
     }
 
     public static LEDCenter getInstance() {
@@ -30,7 +30,8 @@ public class LEDCenter {
     }
 
     public void setDefault() {
-        patternToApply = defaultPattern;
+        defaultPattern.applyTo(buffer);
+        led.setData(buffer);
     }
 
     public Command setDefaultState() {
@@ -38,7 +39,8 @@ public class LEDCenter {
     }
 
     public void setAiming() {
-        patternToApply = readyPattern;
+        readyPattern.applyTo(buffer);
+        led.setData(buffer);
     }
 
     public Command setAimingState() {
@@ -46,7 +48,8 @@ public class LEDCenter {
     }
 
     public void setOff() {
-        patternToApply = LEDPattern.kOff;
+        LEDPattern.kOff.applyTo(buffer);
+        led.setData(buffer);
     }
 
     public Command setOffState() {
@@ -54,7 +57,8 @@ public class LEDCenter {
     }
 
     public void setShooting() {
-        patternToApply = shootingPattern;
+        shootingPattern.applyTo(buffer);
+        led.setData(buffer);
     }
 
     public Command setShootingState() {
@@ -62,15 +66,24 @@ public class LEDCenter {
     }
 
     public void setIntaking() {
-        patternToApply = shootingPattern;
+        intakingPattern.applyTo(buffer);
+        led.setData(buffer);
     }
 
     public Command setIntakingState() {
         return Commands.runOnce(this::setIntaking);
     }
-    
-    public void update() {
-        patternToApply.applyTo(buffer);
+
+    private int counter = 0;
+    public void larsonScanner() {
+        counter++;
+        int step = counter % 42;
+        int eyePosition = step < 22 ? step : 42 - step;
+        for (int i = 0; i < 22; i++) {
+            int distance = Math.abs(eyePosition - i);
+            double fadeFactor = Math.max(0.0, 1.0 - (distance * 0.3)); 
+            buffer.setRGB(i, (int)(173 * fadeFactor), (int)(216 * fadeFactor), (int)(230 * fadeFactor));
+        }
         led.setData(buffer);
     }
 }

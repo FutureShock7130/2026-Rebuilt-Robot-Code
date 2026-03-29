@@ -14,10 +14,12 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
@@ -134,22 +136,23 @@ public class Shooter extends SubsystemBase {
             )
             .withMotorOutput(
                 new MotorOutputConfigs()
-                    .withInverted(InvertedValue.CounterClockwise_Positive)
+                    .withInverted(InvertedValue.Clockwise_Positive)
                     .withNeutralMode(NeutralModeValue.Coast)
             )
             .withMotionMagic(
                 new MotionMagicConfigs()
-                    .withMotionMagicAcceleration(80)
-                    .withMotionMagicJerk(400)
+                    .withMotionMagicAcceleration(160)
+                    .withMotionMagicJerk(1600)
             )
             .withSlot0(
                 new Slot0Configs()
                     .withKS(0.23895).withKV(0.06425).withKA(0.015212)
-                    .withKP(0.081285).withKI(0.004).withKD(0.0)
+                    .withKP(0.081285).withKI(0.008).withKD(0.0)
             );
         
         PhoenixUtil.assertOk(downShooter, () -> downShooter.getConfigurator().apply(downShooterConfig));
         PhoenixUtil.assertOk(downShooter2, () -> downShooter2.getConfigurator().apply(downShooterConfig));
+        downShooter2.setControl(new Follower(downShooter.getDeviceID(), MotorAlignmentValue.Aligned));
 
         angleMotor.setPosition(0.0);
 
@@ -165,7 +168,6 @@ public class Shooter extends SubsystemBase {
     public void setSpeed(double upShooterRPS, double downShooterRPS) {
         upShooter.setControl(upShooterRequeset.withVelocity(upShooterRPS));
         downShooter.setControl(downShooterRequest.withVelocity(downShooterRPS));
-        downShooter2.setControl(downShooterRequest.withVelocity(downShooterRPS));
     }
 
     public void setAngle(double angleRotations) {

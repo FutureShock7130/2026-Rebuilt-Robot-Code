@@ -7,7 +7,9 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,12 +21,12 @@ public class AlignTower extends Command {
     private final CommandSwerveDrivetrain drivetrain;
     private final DoubleSupplier xSpeedSupplier, ySpeedSupplier, rotSpeedSupplier;
 
-    private final SwerveRequest.RobotCentricFacingAngle drive = new SwerveRequest.RobotCentricFacingAngle()
+    private final SwerveRequest.FieldCentricFacingAngle drive = new SwerveRequest.FieldCentricFacingAngle()
         .withMaxAbsRotationalRate(kMaxAngularRate)
         .withHeadingPID(12, 0, 0.3)
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     
-    private double targetAngleDeg = 180.0;
+    private double targetAngleDeg = 0.0;
     private double xSpeed, ySpeed;
     private final Timer missingTargetTimer = new Timer();
 
@@ -49,17 +51,20 @@ public class AlignTower extends Command {
 
     @Override
     public void execute() {
-        targetAngleDeg += rotSpeedSupplier.getAsDouble();
-        xSpeed = -xSpeedSupplier.getAsDouble();
-        ySpeed = -ySpeedSupplier.getAsDouble();
-        if (LimelightHelpers.getTV("limelight-left")) {
-            double[] positions = LimelightHelpers.getBotPose_TargetSpace("limelight-left");
-            xSpeed += (positions[2] - 0.7) * 0.2;
-            ySpeed += (positions[0] - 0.7) * 0.2;
-        }
+        // targetAngleDeg += rotSpeedSupplier.getAsDouble();
+        // xSpeed = -xSpeedSupplier.getAsDouble();
+        // ySpeed = -ySpeedSupplier.getAsDouble();
+        // if (LimelightHelpers.getTV("limelight-left")) {
+        //     double[] positions = LimelightHelpers.getBotPose_TargetSpace("limelight-left");
+        //     xSpeed += (positions[2] - 0.7) * 0.2;
+        //     ySpeed += (positions[0] - 0.7) * 0.2;
+        // }
+        Translation2d curr = drivetrain.getState().Pose.getTranslation();
+        Translation2d target = AllianceFlipUtil.flip(new Translation2d(1.15, 2.85));
+        Translation2d error = AllianceFlipUtil.isRedAlliance() ? target.minus(curr).unaryMinus() : target.minus(curr);
         drivetrain.setControl(
-            drive.withVelocityX(xSpeed)
-                .withVelocityY(ySpeed)
+            drive.withVelocityX(1.0 * error.getX())
+                .withVelocityY(1.0 * error.getY())
                 .withTargetDirection(Rotation2d.fromDegrees(targetAngleDeg))
         );
     }

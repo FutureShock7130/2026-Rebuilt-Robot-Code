@@ -98,10 +98,10 @@ public class RobotContainer {
             Commands.parallel(
                 Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds)),
                 Commands.waitSeconds(1.0).andThen(intake.toDefaultState())
-            ).withTimeout(2.0)
+            ).withTimeout(3.0)
         );
 
-        new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(40, 32)).withName("Accel"));
+        new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(24, 46)).withName("Accel"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -110,8 +110,6 @@ public class RobotContainer {
 
         // Warmup PathPlanner to avoid Java pauses
         CommandScheduler.getInstance().schedule(FollowPathCommand.warmupCommand());
-
-        CommandScheduler.getInstance().schedule(LEDCenter.getInstance().setOffState());
 
         SmartDashboard.putData("Subsystems/Climber", climber);
         SmartDashboard.putData("Subsystems/Indexer", indexer);
@@ -136,8 +134,6 @@ public class RobotContainer {
             drivetrain.applyRequest(() -> idle).ignoringDisable(true).withName("SwerveIdle")
         );
 
-        RobotModeTriggers.disabled().whileTrue(LEDCenter.getInstance().setOffState());
-
         // RobotModeTriggers.teleop().onTrue(climber.toPreClimbPos());
 
         // Run SysId routines when holding back/start and X/Y.
@@ -154,9 +150,11 @@ public class RobotContainer {
         joystick.povUp().whileTrue(intake.outTake());
         joystick.povDown().onTrue(intake.toDefaultState());
         joystick.povRight().onTrue(intake.toFeedingState());
+        joystick.rightTrigger().debounce(1.0).onTrue(intake.toDefaultState());
 
-        joystick.x().onTrue(climber.toPreClimbPos()).toggleOnTrue(autoClimb);
-        joystick.y().onTrue(climber.toDefaultPose()).toggleOnTrue(autoClimb);
+        joystick.x().onTrue(climber.toPreClimbPos());
+        joystick.y().onTrue(climber.toDefaultPose());
+        joystick.a().whileTrue(autoClimb);
 
         // debug/test/manual mode trigger
         joystick.povLeft().toggleOnTrue(testShooterIndexer);

@@ -40,7 +40,6 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         m_timeAndJoystickReplay.update();
         CommandScheduler.getInstance().run();
-        LEDCenter.getInstance().update();
 
         /*
          * This example of adding Limelight is very simple and may not be sufficient for on-field use.
@@ -55,17 +54,17 @@ public class Robot extends TimedRobot {
             double headingDeg = driveState.Pose.getRotation().getDegrees();
             double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
-            LimelightHelpers.SetRobotOrientation("limelight-right", headingDeg, 0, 0, 0, 0, 0);
-            LimelightHelpers.SetRobotOrientation("limelight-left", headingDeg, 0, 0, 0, 0, 0);
+            LimelightHelpers.SetRobotOrientation("limelight-main", headingDeg, 0, 0, 0, 0, 0);
+            // LimelightHelpers.SetRobotOrientation("limelight-left", headingDeg, 0, 0, 0, 0, 0);
             LimelightHelpers.PoseEstimate llRightMeasurement, llLeftMeasurement;
-            llRightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-right");
-            llLeftMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
-            if (llRightMeasurement != null && llRightMeasurement.tagCount > 1 && Math.abs(omegaRps) < 2.0) {
+            llRightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-main");
+            // llLeftMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
+            if (llRightMeasurement != null && llRightMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
                 m_robotContainer.drivetrain.addVisionMeasurement(llRightMeasurement.pose, llRightMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
             }
-            if (llLeftMeasurement != null && llLeftMeasurement.tagCount > 1 && Math.abs(omegaRps) < 2.0) {
-                m_robotContainer.drivetrain.addVisionMeasurement(llLeftMeasurement.pose, llLeftMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
-            }
+            // if (llLeftMeasurement != null && llLeftMeasurement.tagCount > 1 && Math.abs(omegaRps) < 2.0) {
+            //     m_robotContainer.drivetrain.addVisionMeasurement(llLeftMeasurement.pose, llLeftMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
+            // }
         }
 
         SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime() - getShiftLeftTime() + 1.0);
@@ -77,7 +76,9 @@ public class Robot extends TimedRobot {
     public void disabledInit() {}
 
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+        LEDCenter.getInstance().larsonScanner();
+    }
 
     @Override
     public void disabledExit() {}

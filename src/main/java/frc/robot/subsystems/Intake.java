@@ -59,9 +59,9 @@ public class Intake extends SubsystemBase {
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
         intakeMotorConfig.CurrentLimits
-            .withStatorCurrentLimit(40)
-            .withSupplyCurrentLimit(20)
-            .withSupplyCurrentLowerLimit(20)
+            .withStatorCurrentLimit(80)
+            .withSupplyCurrentLimit(30)
+            .withSupplyCurrentLowerLimit(30)
             .withSupplyCurrentLowerTime(0.0);
 
         PhoenixUtil.assertOk(intakeMotor, () -> intakeMotor.getConfigurator().apply(intakeMotorConfig));
@@ -96,7 +96,7 @@ public class Intake extends SubsystemBase {
                     .withKG(0.02).withKS(0.02).withKV(2.5).withKA(0.02)
                     .withKP(16.0).withKI(0.15).withKD(0.57)
                     .withGravityType(GravityTypeValue.Arm_Cosine)
-                    .withGravityArmPositionOffset(kAngleMax)
+                    .withGravityArmPositionOffset(-0.01)
             )
             .withSoftwareLimitSwitch(
                 new SoftwareLimitSwitchConfigs()
@@ -112,7 +112,7 @@ public class Intake extends SubsystemBase {
         CANcoderConfiguration angleCancoderConfig = new CANcoderConfiguration()
             .withMagnetSensor(
                 new MagnetSensorConfigs()
-                    .withAbsoluteSensorDiscontinuityPoint(1.0)
+                    .withAbsoluteSensorDiscontinuityPoint(0.5)
                     .withMagnetOffset(kAngleCancoderOffset)
                     .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
             );
@@ -154,7 +154,7 @@ public class Intake extends SubsystemBase {
         return this.run(
             () -> {
                 angleMotor.setControl(angleRequest.withPosition(kDefaultAngle));
-                intakeMotor.set(0);
+                intakeMotor.set(0.2);
             }
         ).withName("IntakeToDefaultState");
     }
