@@ -16,10 +16,10 @@ public class ShotCompensator {
     private static final double PHASE_DELAY_SEC = 0.04;
     private static final double MIN_DIST = 0.2;
     private static final double MAX_DIST = 8.0;
-    private static final double HEADING_COMPENSATION_FACTOR = 0.5; 
+    private static final double HEADING_COMPENSATION_FACTOR = 0.5;
 
-    private final LinearFilter vxFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
-    private final LinearFilter vyFilter = LinearFilter.singlePoleIIR(0.1, 0.02);
+    private final LinearFilter vxFilter = LinearFilter.singlePoleIIR(0.2, 0.02);
+    private final LinearFilter vyFilter = LinearFilter.singlePoleIIR(0.2, 0.02);
 
     public record SolvingParameters(
         Pose2d robotPose,
@@ -65,7 +65,7 @@ public class ShotCompensator {
     // movement and fuel flight time
     // Tune this factor. Start at 0.3. 
     // If it STILL shoots too far when driving towards the target, increase to 0.5 or 0.6.
-    private static final double DISTANCE_COMP_FACTOR = 0.4;
+    private static final double DISTANCE_COMP_FACTOR = 0.5;
 
     private double calculateEffectiveDistance(Pose2d robotPose, ChassisSpeeds speeds, Translation2d target) {
         Translation2d robotTrans = robotPose.getTranslation();

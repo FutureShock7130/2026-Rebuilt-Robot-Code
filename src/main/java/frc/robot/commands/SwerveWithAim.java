@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.FSLib.util.AllianceFlipUtil;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.shooter.ShotCompensator;
 
 public class SwerveWithAim extends Command {
     private final CommandSwerveDrivetrain drivetrain;
@@ -34,6 +35,8 @@ public class SwerveWithAim extends Command {
             .withHeadingPID(12, 0, 0.3)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+
+    private final ShotCompensator compensator = new ShotCompensator();
 
     /** Command for aiming during auto */
     public SwerveWithAim(CommandSwerveDrivetrain drivetrain) {
@@ -80,6 +83,8 @@ public class SwerveWithAim extends Command {
             }
 
             Rotation2d angle = AllianceFlipUtil.toAllianceCoord(AllianceFlipUtil.flip(facingTarget).minus(robotPose.getTranslation()).getAngle());
+
+            Rotation2d compensatedAngle = compensator.calculateCompensatedHeading(robotPose, fieldSpeeds, facingTarget);
             // Set modules to "X" fasion when near facing angle target and no driver inputs
             if (
                 Math.abs(angle.getDegrees() - robotPose.getRotation().getDegrees()) > 1.5
@@ -89,7 +94,7 @@ public class SwerveWithAim extends Command {
                 drivetrain.setControl(
                     driveAngle.withVelocityX(xSpeedSupplier.getAsDouble())
                         .withVelocityY(ySpeedSupplier.getAsDouble())
-                        .withTargetDirection(angle)
+                        .withTargetDirection(compensatedAngle) // change to angle to disable heading compensation
                 );
             } else {
                 drivetrain.setControl(brake);

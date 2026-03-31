@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
     private final TalonFX downShooter = new TalonFX(kDownShooterId, Constants.kCanivoreBus);
     private final TalonFX downShooter2 = new TalonFX(kDownShooter2Id, Constants.kCanivoreBus);
 
-    private final DynamicMotionMagicVoltage angleRequest = new DynamicMotionMagicVoltage(0, 0.5, 2.5).withEnableFOC(true);
+    private final DynamicMotionMagicVoltage angleRequest = new DynamicMotionMagicVoltage(0, 0.9, 2.5).withEnableFOC(true);
 
     private final MotionMagicVelocityVoltage upShooterRequeset = new MotionMagicVelocityVoltage(0)
         .withEnableFOC(true)
@@ -70,19 +70,13 @@ public class Shooter extends SubsystemBase {
         TalonFXConfiguration angleConfig = new TalonFXConfiguration()
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
-                    .withStatorCurrentLimit(40)
-                    .withSupplyCurrentLimit(20)
-                    .withSupplyCurrentLowerLimit(20)
+                    .withStatorCurrentLimit(80)
+                    .withSupplyCurrentLimit(40)
+                    .withSupplyCurrentLowerLimit(30)
             )
             .withFeedback(
                 new FeedbackConfigs()
                     .withSensorToMechanismRatio(kSensorToAngleRatio)
-            )
-            .withMotionMagic(
-                new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(0.5)
-                    .withMotionMagicAcceleration(2.5)
-                    .withMotionMagicJerk(25)
             )
             .withMotorOutput(
                 new MotorOutputConfigs()

@@ -55,7 +55,7 @@ public class Constants {
         public static final double kRotorToSensorRatio = 60.0;
 
         public static final double kIntakeAngle = 0.0;
-        public static final double kIntakeSpeed = 0.4;
+        public static final double kIntakeSpeed = 0.5;
         public static final double kDefaultAngle = 0.28;
 
         public static final double kAngleCancoderOffset = -0.317626953125;
