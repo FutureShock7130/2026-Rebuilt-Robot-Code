@@ -76,7 +76,7 @@ public class SwerveWithAim extends Command {
         ) {
             // Switch aiming target between HUB and transport target based on robot's position
             Translation2d facingTarget;
-            if ((robotPose.getX() - AllianceFlipUtil.flipX(0)) * (robotPose.getX() - AllianceFlipUtil.flipX(4.028)) < 0) { // in alliance zones
+            if ((robotPose.getX() - AllianceFlipUtil.flipX(0)) * (robotPose.getX() - AllianceFlipUtil.flipX(4.528)) < 0) { // in alliance zones
                 facingTarget = kHubLocation;
             } else {
                 facingTarget = AllianceFlipUtil.flipY(robotPose.getY()) < 4.035 ? kRightTransportTarget : kLeftTransportTarget;

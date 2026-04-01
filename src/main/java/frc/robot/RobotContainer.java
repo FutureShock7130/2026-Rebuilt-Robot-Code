@@ -97,8 +97,8 @@ public class RobotContainer {
             "Shoot", 
             Commands.parallel(
                 Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds)),
-                Commands.waitSeconds(1.0).andThen(intake.toDefaultState())
-            ).withTimeout(3.0)
+                Commands.waitSeconds(0.8).andThen(intake.toDefaultState())
+            ).withTimeout(2.5)
         );
 
         new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(24, 46)).withName("Accel"));
@@ -150,7 +150,7 @@ public class RobotContainer {
         joystick.povUp().whileTrue(intake.outTake());
         joystick.povDown().onTrue(intake.toDefaultState());
         joystick.povRight().onTrue(intake.toFeedingState());
-        joystick.rightTrigger().debounce(1.0).onTrue(intake.toDefaultState());
+        joystick.rightTrigger().debounce(0.8).onTrue(intake.toDefaultState());
 
         joystick.x().onTrue(climber.toPreClimbPos());
         joystick.y().onTrue(climber.toDefaultPose());

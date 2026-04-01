@@ -65,7 +65,7 @@ public class ShooterIndexer extends Command {
             // Switch aiming target between HUB and transport target based on robot's position
             Translation2d robotTranslation = robotPoseSupplier.get().getTranslation();
             Translation2d aimingTarget;
-            if ((robotTranslation.getX() - AllianceFlipUtil.flipX(0)) * (robotTranslation.getX() - AllianceFlipUtil.flipX(4.028)) < 0) { // in alliance zones
+            if ((robotTranslation.getX() - AllianceFlipUtil.flipX(0)) * (robotTranslation.getX() - AllianceFlipUtil.flipX(4.528)) < 0) { // in alliance zones
                 aimingTarget = kHubLocation;
             } else {
                 aimingTarget = AllianceFlipUtil.flipY(robotTranslation.getY()) < 4.035 ? kRightTransportTarget : kLeftTransportTarget;
@@ -73,7 +73,7 @@ public class ShooterIndexer extends Command {
             SolvingParameters solvingParameters = new SolvingParameters(robotPoseSupplier.get(), chassisSpeedsSupplier.get(), AllianceFlipUtil.flip(aimingTarget));
             FiringSolution solution = compensator.solve(solvingParameters);
             
-            if ((robotTranslation.getX() - AllianceFlipUtil.flipX(0)) * (robotTranslation.getX() - AllianceFlipUtil.flipX(4.028)) < 0) { // in alliance zones
+            if ((robotTranslation.getX() - AllianceFlipUtil.flipX(0)) * (robotTranslation.getX() - AllianceFlipUtil.flipX(4.528)) < 0) { // in alliance zones
                 shooter.setAngle(solution.shooterAngle());
                 shooter.setSpeed(solution.shooterUpSpeed(), solution.shooterDownSpeed());
             } else {
@@ -81,7 +81,7 @@ public class ShooterIndexer extends Command {
                 shooter.setSpeed(solution.shooterUpSpeed() - 8, solution.shooterDownSpeed() - 16);
             }
             
-            if (doShootSupplier.getAsBoolean() && solution.isReachable()) {
+            if (doShootSupplier.getAsBoolean() && solution.isReachable() && shooter.atTargetSpeed()) {
                 indexer.set(IndexerConstants.kIndexingSpeed, IndexerConstants.kIndexingSpeed);
                 LEDCenter.getInstance().setShooting();
             } else {

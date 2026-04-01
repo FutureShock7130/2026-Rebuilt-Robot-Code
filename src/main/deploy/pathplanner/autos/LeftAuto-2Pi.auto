@@ -5,13 +5,19 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "wait",
                 "data": {
-                  "pathName": "LeftStartToMid1"
+                  "waitTime": 0.2
                 }
               },
               {
@@ -24,9 +30,41 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Mid1ToLeftShoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Left2PiStartToMid1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid1ToLeftShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -55,25 +93,13 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Mid2ToLeftShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LeftShootToMid3"
+                  "pathName": "Mid2ToLeftShoot"
                 }
               },
               {
@@ -83,12 +109,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Mid3ToLeftShoot"
           }
         },
         {

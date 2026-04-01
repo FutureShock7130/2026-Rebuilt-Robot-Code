@@ -40,7 +40,7 @@ public class Intake extends SubsystemBase {
 
     private final CANcoder angleCancoder = new CANcoder(kAngleCancoderId, Constants.kCanivoreBus);
 
-    private final DynamicMotionMagicVoltage angleRequest = new DynamicMotionMagicVoltage(0.0, 0.5, 2.5).withEnableFOC(true);
+    private final DynamicMotionMagicVoltage angleRequest = new DynamicMotionMagicVoltage(0.0, 0.9, 2.5).withEnableFOC(true);
 
     private DoubleConsumer telemetry;
 
@@ -59,8 +59,8 @@ public class Intake extends SubsystemBase {
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
         intakeMotorConfig.CurrentLimits
-            .withStatorCurrentLimit(80)
-            .withSupplyCurrentLimit(30)
+            .withStatorCurrentLimit(90)
+            .withSupplyCurrentLimit(50)
             .withSupplyCurrentLowerLimit(30)
             .withSupplyCurrentLowerTime(0.0);
 
