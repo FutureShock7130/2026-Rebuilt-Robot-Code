@@ -100,6 +100,12 @@ public class RobotContainer {
                 Commands.waitSeconds(0.8).andThen(intake.toDefaultState())
             ).withTimeout(2.5)
         );
+        NamedCommands.registerCommand(
+            "Shoot-short", 
+            Commands.parallel(
+                Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds))
+            ).withTimeout(1.2)
+        );
 
         new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(24, 46)).withName("Accel"));
 

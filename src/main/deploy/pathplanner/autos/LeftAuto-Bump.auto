@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Mid1ToLeftShoot"
+            "pathName": "Mid1BumpToLeftShoot"
           }
         },
         {
@@ -57,38 +57,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Mid2ToLeftShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "LeftShootToDepot"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DepotToLeftShoot"
+            "pathName": "Mid2BumpToLeftShoot"
           }
         },
         {
