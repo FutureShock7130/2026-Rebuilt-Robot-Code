@@ -45,7 +45,7 @@ public class AlignTower extends Command {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        LimelightHelpers.setPriorityTagID("limelight-left", AllianceFlipUtil.isRedAlliance() ? 16 : 32);
+        // LimelightHelpers.setPriorityTagID("limelight-left", AllianceFlipUtil.isRedAlliance() ? 16 : 32);
         missingTargetTimer.restart();
     }
 

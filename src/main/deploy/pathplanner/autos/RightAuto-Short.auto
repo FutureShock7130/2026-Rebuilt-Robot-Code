@@ -24,9 +24,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Mid4ToRightShoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid4ToRightShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -55,9 +68,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "MId3ToRightShoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "MId3ToRightShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {

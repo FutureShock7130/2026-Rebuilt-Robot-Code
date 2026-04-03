@@ -24,9 +24,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Mid1BumpToLeftShoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid1BumpToLeftShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -55,9 +68,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Mid2BumpToLeftShoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Mid2BumpToLeftShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {

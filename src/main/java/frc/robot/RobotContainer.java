@@ -106,6 +106,7 @@ public class RobotContainer {
                 Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds))
             ).withTimeout(1.2)
         );
+        NamedCommands.registerCommand("Climb", climber.toPreClimbPos().withTimeout(3.0).andThen(climber.toDefaultPose()));
 
         new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(24, 46)).withName("Accel"));
 
