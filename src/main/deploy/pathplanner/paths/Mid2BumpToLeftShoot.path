@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.2774465049928665,
-        "y": 4.778972895863053
+        "x": 6.095385542168674,
+        "y": 4.7453012048192775
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.014950071326675,
-        "y": 5.7364336661911555
+        "x": 7.202794458862555,
+        "y": 5.684195778835743
       },
       "isLocked": false,
       "linkedName": "Mid2R"
@@ -89,7 +89,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 6.0,
+    "maxAcceleration": 8.0,
     "maxAngularVelocity": 270.0,
     "maxAngularAcceleration": 540.0,
     "nominalVoltage": 12.0,
