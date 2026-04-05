@@ -27,6 +27,7 @@ public class Constants {
 
     public static final class ClimberConstants {
         public static final int kMotorId = 46;
+        public static final int kCANRangeId = 47;
 
         public static final double kSensorToMechanismRatio = 60;
         public static final double kMechanismToHeighRatio = 0.11401528;
@@ -55,7 +56,7 @@ public class Constants {
         public static final double kRotorToSensorRatio = 60.0;
 
         public static final double kIntakeAngle = 0.0;
-        public static final double kIntakeSpeed = 0.4;
+        public static final double kIntakeSpeed = 0.5;
         public static final double kDefaultAngle = 0.28;
 
         public static final double kAngleCancoderOffset = -0.317626953125;
@@ -80,7 +81,7 @@ public class Constants {
         public static final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
         static {
-            angleMap.put(0.0, 0.0);
+            angleMap.put(0.0, 0.02);
             angleMap.put(1.5, 0.02);
             angleMap.put(2.0, 0.035);
             angleMap.put(2.5, 0.0375);

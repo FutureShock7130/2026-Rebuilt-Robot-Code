@@ -15,7 +15,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 public class ShotCompensator {
     private static final double PHASE_DELAY_SEC = 0.04;
     private static final double MIN_DIST = 0.2;
-    private static final double MAX_DIST = 8.0;
+    private static final double MAX_DIST = 18.0;
     private static final double HEADING_COMPENSATION_FACTOR = 0.6;
 
     private final LinearFilter vxFilter = LinearFilter.singlePoleIIR(0.2, 0.02);

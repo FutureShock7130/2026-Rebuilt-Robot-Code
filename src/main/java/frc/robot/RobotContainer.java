@@ -5,6 +5,9 @@
 package frc.robot;
 
 import static frc.robot.Constants.kMaxSpeed;
+
+import java.security.spec.NamedParameterSpec;
+
 import static frc.robot.Constants.kMaxAngularRate;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -106,7 +109,8 @@ public class RobotContainer {
                 Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds))
             ).withTimeout(1.2)
         );
-        NamedCommands.registerCommand("Climb", climber.toPreClimbPos().withTimeout(3.0).andThen(climber.toDefaultPose()));
+        NamedCommands.registerCommand("Climb", climber.toPreClimbPos().withTimeout(5.0).andThen(climber.toDefaultPose()));
+        NamedCommands.registerCommand("AlignTower", autoClimb);
 
         new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(24, 46)).withName("Accel"));
 

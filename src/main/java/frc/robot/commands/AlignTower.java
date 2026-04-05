@@ -26,6 +26,8 @@ public class AlignTower extends Command {
         .withHeadingPID(12, 0, 0.3)
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     
+    private Translation2d rightClimbPos = new Translation2d(1.15, 3.0);
+    private Translation2d leftClimbPos = new Translation2d(0.95, 4.5);
     private double targetAngleDeg = 0.0;
     private double xSpeed, ySpeed;
     private final Timer missingTargetTimer = new Timer();
@@ -60,12 +62,12 @@ public class AlignTower extends Command {
         //     ySpeed += (positions[0] - 0.7) * 0.2;
         // }
         Translation2d curr = drivetrain.getState().Pose.getTranslation();
-        Translation2d target = AllianceFlipUtil.flip(new Translation2d(1.15, 2.85));
+        Translation2d target = AllianceFlipUtil.flip(AllianceFlipUtil.flipY(drivetrain.getState().Pose.getTranslation().getY()) < 4.035 ? rightClimbPos : leftClimbPos);
         Translation2d error = AllianceFlipUtil.isRedAlliance() ? target.minus(curr).unaryMinus() : target.minus(curr);
         drivetrain.setControl(
             drive.withVelocityX(1.0 * error.getX())
-                .withVelocityY(1.0 * error.getY())
-                .withTargetDirection(Rotation2d.fromDegrees(targetAngleDeg))
+                .withVelocityY(4.5 * error.getY())
+                .withTargetDirection(AllianceFlipUtil.isRedAlliance() ? Rotation2d.fromDegrees(target == AllianceFlipUtil.flip(rightClimbPos) ? targetAngleDeg + 180 : targetAngleDeg) : Rotation2d.fromDegrees(target == AllianceFlipUtil.flip(rightClimbPos) ? targetAngleDeg : targetAngleDeg + 180))
         );
     }
 

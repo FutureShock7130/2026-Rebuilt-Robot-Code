@@ -40,7 +40,7 @@ public class Intake extends SubsystemBase {
 
     private final CANcoder angleCancoder = new CANcoder(kAngleCancoderId, Constants.kCanivoreBus);
 
-    private final DynamicMotionMagicVoltage angleRequest = new DynamicMotionMagicVoltage(0.0, 2.0, 10.0).withEnableFOC(true);
+    private final DynamicMotionMagicVoltage angleRequest = new DynamicMotionMagicVoltage(0.0, 2.5, 10.0).withEnableFOC(true);
 
     private DoubleConsumer telemetry;
 
