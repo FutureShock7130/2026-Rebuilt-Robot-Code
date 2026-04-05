@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.FovParamsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -32,6 +33,7 @@ import frc.robot.Constants;
 
 public class Climber extends SubsystemBase {
     private final TalonFX leftClimber = new TalonFX(kMotorId, Constants.kCanivoreBus);
+    private final CANrange canrange = new CANrange(kCANRangeId, Constants.kCanivoreBus);
 
     private final DynamicMotionMagicVoltage request = new DynamicMotionMagicVoltage(0, 50, 250)
         .withEnableFOC(true);
@@ -84,6 +86,13 @@ public class Climber extends SubsystemBase {
 
         leftClimber.setPosition(0);
 
+        CANrangeConfiguration canrangeConfig = new CANrangeConfiguration()
+            .withProximityParams(
+                new ProximityParamsConfigs()
+            );
+
+        canrange.getConfigurator().apply(canrangeConfig);
+
         var talonFXSim = leftClimber.getSimState();
         talonFXSim.Orientation = ChassisReference.CounterClockwise_Positive;
         talonFXSim.setMotorType(TalonFXSimState.MotorType.KrakenX60);
@@ -115,6 +124,14 @@ public class Climber extends SubsystemBase {
 
     public boolean atTargetHeight() {
         return Math.abs(leftClimber.getClosedLoopError().getValueAsDouble()) < 0.05;
+    }
+
+    public boolean isAlignedToTower() {
+        return canrange.getIsDetected().getValue();
+    }
+
+    public double getDistance() {
+        return canrange.getDistance().getValueAsDouble();
     }
 
     public void registerTelemetry(DoubleConsumer telemetry) {

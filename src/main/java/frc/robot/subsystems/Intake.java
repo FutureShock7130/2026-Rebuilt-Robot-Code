@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.FSLib.util.PhoenixUtil;
 import frc.robot.Constants;
-import frc.robot.LEDCenter;
 
 public class Intake extends SubsystemBase {
     private final TalonFX angleMotor = new TalonFX(kAngleMotorId, Constants.kCanivoreBus);
@@ -125,14 +124,11 @@ public class Intake extends SubsystemBase {
     public Command intake() {
         return this.startEnd(
             () -> {
-                angleMotor.setControl(angleRequest.withPosition(kIntakeAngle));
+                angleMotor.setControl(angleRequest.withPosition(kIntakeAngle).withVelocity(4.0));
                 intakeMotor.set(kIntakeSpeed);
-                LEDCenter.getInstance().setIntaking();
             },
             () -> {
-                angleMotor.setControl(angleRequest.withPosition(kIntakeAngle));
                 intakeMotor.set(0);
-                LEDCenter.getInstance().setDefault();
             }
         ).withName("IntakeIntake");
     }
@@ -144,7 +140,6 @@ public class Intake extends SubsystemBase {
                 intakeMotor.set(-kIntakeSpeed);
             },
             () -> {
-                angleMotor.setControl(angleRequest.withPosition(kIntakeAngle));
                 intakeMotor.set(0);
             }
         ).withName("IntakeOutTake");
@@ -153,7 +148,7 @@ public class Intake extends SubsystemBase {
     public Command toDefaultState() {
         return this.run(
             () -> {
-                angleMotor.setControl(angleRequest.withPosition(kDefaultAngle));
+                angleMotor.setControl(angleRequest.withPosition(kDefaultAngle).withVelocity(0.3));
                 intakeMotor.set(0.2);
             }
         ).withName("IntakeToDefaultState");

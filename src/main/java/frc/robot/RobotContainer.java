@@ -6,8 +6,6 @@ package frc.robot;
 
 import static frc.robot.Constants.kMaxSpeed;
 
-import java.security.spec.NamedParameterSpec;
-
 import static frc.robot.Constants.kMaxAngularRate;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -16,7 +14,9 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -25,8 +25,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.AlignTower;
 import frc.robot.commands.ManualShooterIndexer;
@@ -61,12 +63,28 @@ public class RobotContainer {
         joystick.rightBumper()
     );
 
-    private final AlignTower autoClimb = new AlignTower(
-        drivetrain,
-        () -> MathUtil.copyDirectionPow(-joystick.getLeftY(), 2.0) * kMaxSpeed / 3.0,
-        () -> MathUtil.copyDirectionPow(-joystick.getLeftX(), 2.0) * kMaxSpeed / 3.0,
-        () -> -joystick.getRightX()
-    );
+    private final Command autoClimbLeft = 
+        Commands.sequence(
+            Commands.race(new WaitCommand(0.5), intake.intake()),
+            Commands.parallel(
+                new PathPlannerAuto("MidLeft-Climb"),
+                climber.toPreClimbPos()
+            ).until(climber::isAlignedToTower),
+            new AlignTower(drivetrain, climber),
+            climber.toDefaultPose()
+        );
+
+    private final Command autoClimbRight = 
+        Commands.sequence(
+            intake.intake().withTimeout(0.5),
+            Commands.parallel(
+                new PathPlannerAuto("MidRight-Climb"),
+                climber.toPreClimbPos()
+            ).until(climber::isAlignedToTower),
+            new AlignTower(drivetrain, climber),
+            climber.toDefaultPose()
+        );
+
 
     private final ShooterIndexer shooterIndexer = new ShooterIndexer(
         shooter,
@@ -94,6 +112,8 @@ public class RobotContainer {
     /* Path follower */
     private final SendableChooser<Command> autoChooser;
 
+    private final LEDCenter ledCenter = new LEDCenter();
+
     public RobotContainer() {
         NamedCommands.registerCommand("Intake", intake.intake());
         NamedCommands.registerCommand(
@@ -109,12 +129,14 @@ public class RobotContainer {
                 Commands.parallel(new SwerveWithAim(drivetrain), new ShooterIndexer(shooter, indexer, () -> drivetrain.getState().Pose, () -> drivetrain.getState().Speeds))
             ).withTimeout(1.2)
         );
-        NamedCommands.registerCommand("Climb", climber.toPreClimbPos().withTimeout(5.0).andThen(climber.toDefaultPose()));
-        NamedCommands.registerCommand("AlignTower", autoClimb);
+        NamedCommands.registerCommand("Climb", climber.toPreClimbPos());
+        NamedCommands.registerCommand("AutoClimb", new AlignTower(drivetrain, climber));
 
         new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(24, 46)).withName("Accel"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
+        autoChooser.addOption("TmpTowerLeft", autoClimbLeft);
+        autoChooser.addOption("TmpTowerRight", autoClimbRight);
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
@@ -128,6 +150,8 @@ public class RobotContainer {
         SmartDashboard.putData("Subsystems/Shooter", shooter);
 
         SmartDashboard.putNumber("AngularRate", 1.5);
+
+        ledCenter.initialize(joystick.getHID());
     }
 
     private void configureBindings() {
@@ -165,7 +189,8 @@ public class RobotContainer {
 
         joystick.x().onTrue(climber.toPreClimbPos());
         joystick.y().onTrue(climber.toDefaultPose());
-        joystick.a().whileTrue(autoClimb);
+        joystick.a().whileTrue(autoClimbLeft);
+        joystick.b().whileTrue(autoClimbRight);
 
         // debug/test/manual mode trigger
         joystick.povLeft().toggleOnTrue(testShooterIndexer);

@@ -54,10 +54,11 @@ public class TestShooterIndexer extends Command {
             indexer.set(0, 0);
         }
 
+        Pose2d robotPose = robotPoseSupplier.get();
+        double distance = robotPose.getTranslation().getDistance(AllianceFlipUtil.flip(kHubLocation));
+        SmartDashboard.putNumber("TestShooter/Distance", distance);
+
         if (!recordResult && SmartDashboard.getBoolean("TestShooter/Record", false)) {
-            Pose2d robotPose = robotPoseSupplier.get();
-            double distance = robotPose.getTranslation().getDistance(AllianceFlipUtil.flip(kHubLocation));
-            recordResult = true;
             testResult += String.format(
                 "angleMap.put(%.2f, %.2f);\nupSpeedMap.put(%.2f, %.2f);\ndownSpeedMap.put(%.2f, %.2f);\n\n",
                 distance,

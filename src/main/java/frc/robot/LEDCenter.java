@@ -4,29 +4,32 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class LEDCenter {
-    private static final LEDCenter instance = new LEDCenter();
-
+public class LEDCenter extends SubsystemBase {
     private final AddressableLED led = new AddressableLED(9);
     private final AddressableLEDBuffer buffer = new AddressableLEDBuffer(22);
 
     private final LEDPattern defaultPattern = LEDPattern.solid(Color.kLightBlue);
+    private final LEDPattern manualModePattern = LEDPattern.solid(Color.kFirstRed);
+    private final LEDPattern testModePattern = LEDPattern.solid(Color.kYellow);
     private final LEDPattern readyPattern = LEDPattern.solid(Color.kGreen);
     private final LEDPattern shootingPattern = readyPattern.blink(Seconds.of(0.25));
     private final LEDPattern intakingPattern = defaultPattern.blink(Seconds.of(0.25));
+    
+    private XboxController driverController;
 
-    private LEDCenter() {
+    public LEDCenter() {
         led.setLength(buffer.getLength());
         led.start();
     }
 
-    public static LEDCenter getInstance() {
-        return instance;
+    public void initialize(XboxController driverController) {
+        this.driverController = driverController;
     }
 
     public void setDefault() {
@@ -34,8 +37,14 @@ public class LEDCenter {
         led.setData(buffer);
     }
 
-    public Command setDefaultState() {
-        return Commands.runOnce(this::setDefault);
+    public void setManual() {
+        manualModePattern.applyTo(buffer);
+        led.setData(buffer);
+    }
+
+    public void setTest() {
+        testModePattern.applyTo(buffer);
+        led.setData(buffer);
     }
 
     public void setAiming() {
@@ -43,17 +52,9 @@ public class LEDCenter {
         led.setData(buffer);
     }
 
-    public Command setAimingState() {
-        return Commands.runOnce(this::setAiming);
-    }
-
     public void setOff() {
         LEDPattern.kOff.applyTo(buffer);
         led.setData(buffer);
-    }
-
-    public Command setOffState() {
-        return Commands.runOnce(this::setOff);
     }
 
     public void setShooting() {
@@ -61,21 +62,13 @@ public class LEDCenter {
         led.setData(buffer);
     }
 
-    public Command setShootingState() {
-        return Commands.runOnce(this::setShooting);
-    }
-
     public void setIntaking() {
         intakingPattern.applyTo(buffer);
         led.setData(buffer);
     }
 
-    public Command setIntakingState() {
-        return Commands.runOnce(this::setIntaking);
-    }
-
     private int counter = 0;
-    public void larsonScanner() {
+    public void setLarsonScanner() {
         counter++;
         int step = counter % 42;
         int eyePosition = step < 22 ? step : 42 - step;
@@ -85,5 +78,30 @@ public class LEDCenter {
             buffer.setRGB(i, (int)(173 * fadeFactor), (int)(216 * fadeFactor), (int)(230 * fadeFactor));
         }
         led.setData(buffer);
+    }
+
+    private boolean isTestMode = false, isManualMode = false;
+
+    @Override
+    public void periodic() {
+        if (DriverStation.isDisabled()) {
+            setLarsonScanner();
+        } else if (driverController.getRightBumperButton()) {
+            if (driverController.getRightTriggerAxis() > 0.5) {
+                setShooting();
+            } else {
+                setAiming();
+            }
+        } else if (driverController.getLeftTriggerAxis() > 0.5) {
+            setIntaking();
+        } else {
+            if (isTestMode) {
+                setTest();
+            } else if (isManualMode) {
+                setManual();
+            } else {
+                setDefault();
+            }
+        }
     }
 }

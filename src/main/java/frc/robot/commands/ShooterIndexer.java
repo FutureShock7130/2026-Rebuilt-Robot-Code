@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.FSLib.util.AllianceFlipUtil;
-import frc.robot.LEDCenter;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Shooter;
@@ -61,7 +60,6 @@ public class ShooterIndexer extends Command {
     @Override
     public void execute() {
         if (doAimSupplier.getAsBoolean()) {
-            LEDCenter.getInstance().setAiming();
             // Switch aiming target between HUB and transport target based on robot's position
             Translation2d robotTranslation = robotPoseSupplier.get().getTranslation();
             Translation2d aimingTarget;
@@ -83,7 +81,6 @@ public class ShooterIndexer extends Command {
             
             if (doShootSupplier.getAsBoolean() && solution.isReachable() && shooter.atTargetSpeed()) {
                 indexer.set(IndexerConstants.kIndexingSpeed, IndexerConstants.kIndexingSpeed);
-                LEDCenter.getInstance().setShooting();
             } else {
                 indexer.set(0.0, 0.0);
             }
@@ -91,7 +88,6 @@ public class ShooterIndexer extends Command {
             shooter.setAngle(0.0);
             shooter.setSpeed(0.0, 0.0);
             indexer.set(0.0, 0.0);
-            LEDCenter.getInstance().setDefault();
         }
     }
 
