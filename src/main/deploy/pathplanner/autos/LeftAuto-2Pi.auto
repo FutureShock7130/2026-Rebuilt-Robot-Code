@@ -7,7 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Shoot-short"
           }
         },
         {
@@ -37,25 +37,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Left2Pi-Bump1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Mid1ToLeftShoot"
                 }
               },
               {

@@ -41,12 +41,12 @@ public class AlignTower extends Command {
         targetDeg = AllianceFlipUtil.isRedAlliance() ? targetDeg + 180 : targetDeg;
         if (!climber.isAlignedToTower()) {
             drivetrain.setControl(
-                driveRobot.withVelocityX(0.7)
+                driveRobot.withVelocityX(0.5)
                     .withVelocityY(0)
                     .withTargetDirection(Rotation2d.fromDegrees(targetDeg))
             );
             timer.reset();
-        } else if (climber.getDistance() > 0.05) {    
+        } else if (climber.getDistance() > 0.06) {    
             drivetrain.setControl(
                 driveRobot.withVelocityX(0)
                     .withVelocityY(0.2)
