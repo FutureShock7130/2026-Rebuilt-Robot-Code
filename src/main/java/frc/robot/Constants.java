@@ -31,10 +31,10 @@ public class Constants {
 
         public static final double kSensorToMechanismRatio = 60;
         public static final double kMechanismToHeighRatio = 0.11401528;
-        public static final double kPreClimbHeightMeters = 0.235;
+        public static final double kPreClimbHeightMeters = 0.242;
         public static final double kClimbHeightMeters = 0.0;
 
-        public static final double kMaxHeightMeters = 0.24;
+        public static final double kMaxHeightMeters = 0.243;
         public static final double kMinHeightMeters = 0.0;
     }
 
