@@ -41,6 +41,7 @@ public class ShotCompensator {
 
         // Dynamic Distance Calculation
         double effectiveDistance = calculateEffectiveDistance(predictedPose, params.robotSpeeds(), params.targetLocation());
+        System.out.println(effectiveDistance);
 
         boolean isReachable = effectiveDistance >= MIN_DIST && effectiveDistance <= MAX_DIST;
 

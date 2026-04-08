@@ -68,7 +68,7 @@ public class Constants {
         public static final int kDownShooterId = 55;
         public static final int kDownShooter2Id = 62;
 
-        public static final double kAngleMax = 0.0522;
+        public static final double kAngleMax = 0.055;
         public static final double kAngleMin = 0;
 
         public static final double kSensorToAngleRatio = 162.0;
@@ -81,38 +81,67 @@ public class Constants {
         public static final InterpolatingDoubleTreeMap timeOfFlightMap = new InterpolatingDoubleTreeMap();
 
         static {
-            angleMap.put(0.0, 0.02);
-            angleMap.put(1.5, 0.02);
-            angleMap.put(2.0, 0.035);
-            angleMap.put(2.5, 0.0375);
-            angleMap.put(3.0, 0.045);
-            angleMap.put(4.0, 0.052);
-            angleMap.put(4.5, 0.052);
-            angleMap.put(5.0, 0.052);
-            angleMap.put(5.5, 0.052);
-            angleMap.put(6.0, 0.052);
-            angleMap.put(999.0, 0.052);
+            //green
+            // angleMap.put(0.0, 0.02);
+            // angleMap.put(1.5, 0.02);
+            // angleMap.put(2.0, 0.035);
+            // angleMap.put(2.5, 0.0375);
+            // angleMap.put(3.0, 0.045);
+            // angleMap.put(4.0, 0.052);
+            //angleMap.put(4.5, 0.052);
+            //angleMap.put(5.0, 0.052);
+            //angleMap.put(5.5, 0.052);
+            //angleMap.put(6.0, 0.052);
+            //angleMap.put(999.0, 0.052);
 
-            upSpeedMap.put(0.0, 22.0);
-            upSpeedMap.put(1.5, 23.0);
-            upSpeedMap.put(2.0, 24.0);
-            upSpeedMap.put(3.0, 24.0);
-            upSpeedMap.put(4.0, 24.0);
-            upSpeedMap.put(5.0, 25.0);
-            upSpeedMap.put(6.0, 28.0);
+            //blue
+            angleMap.put(0.0, 0.023);
+            angleMap.put(1.5, 0.023);
+            angleMap.put(2.75, 0.04);
+            angleMap.put(3.5, 0.047);
+            angleMap.put(4.5, 0.047);
+            angleMap.put(5.5, 0.055);
+            angleMap.put(999.0, 0.055);
+            //green
+            // upSpeedMap.put(0.0, 22.0);
+            // upSpeedMap.put(1.5, 23.0);
+            // upSpeedMap.put(2.0, 24.0);
+            // upSpeedMap.put(3.0, 24.0);
+            // upSpeedMap.put(4.0, 24.0);
+            // upSpeedMap.put(5.0, 25.0);
+            //upSpeedMap.put(6.0, 28.0);
+            //upSpeedMap.put(999.0, 28.0);
+
+            //blue
+            upSpeedMap.put(0.0, 24.0);
+            upSpeedMap.put(1.5, 24.0);
+            upSpeedMap.put(2.75, 24.0);
+            upSpeedMap.put(3.5, 24.0);
+            upSpeedMap.put(4.5, 27.0);
+            upSpeedMap.put(5.5, 27.0);
             upSpeedMap.put(999.0, 28.0);
 
-            downSpeedMap.put(0.0, 33.0);
-            downSpeedMap.put(1.5, 33.0);
-            downSpeedMap.put(2.0, 35.75);
-            downSpeedMap.put(2.5, 36.75);
-            downSpeedMap.put(3.0, 39.45);
-            downSpeedMap.put(3.5, 42.5);
-            downSpeedMap.put(4.0, 46.25);
-            downSpeedMap.put(4.5, 50.75);
-            downSpeedMap.put(5.0, 54.0);
-            downSpeedMap.put(6.0, 60.0);
-            downSpeedMap.put(999.0, 60.0);
+            //green
+            // downSpeedMap.put(0.0, 33.0);
+            // downSpeedMap.put(1.5, 33.0);
+            // downSpeedMap.put(2.0, 35.75);
+            // downSpeedMap.put(2.5, 36.75);
+            // downSpeedMap.put(3.0, 39.45);
+            // //downSpeedMap.put(3.5, 42.5);
+            // downSpeedMap.put(4.0, 46.25);
+            // //downSpeedMap.put(4.5, 50.75);
+            // downSpeedMap.put(5.0, 54.0);
+            //downSpeedMap.put(6.0, 60.0);
+            //downSpeedMap.put(999.0, 60.0);
+
+            //blue
+            downSpeedMap.put(0.0, 38.0);
+            downSpeedMap.put(1.5, 38.0);
+            downSpeedMap.put(2.75, 40.0);
+            downSpeedMap.put(3.5, 45.0);
+            downSpeedMap.put(4.5, 52.0);
+            downSpeedMap.put(5.5, 56.0);
+            downSpeedMap.put(999.0, 56.0);
 
             timeOfFlightMap.put(0.5, 1.2);
             timeOfFlightMap.put(1.0, 1.4);
