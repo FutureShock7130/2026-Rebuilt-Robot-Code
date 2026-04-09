@@ -89,6 +89,7 @@ public class Climber extends SubsystemBase {
         CANrangeConfiguration canrangeConfig = new CANrangeConfiguration()
             .withProximityParams(
                 new ProximityParamsConfigs().withProximityThreshold(0.6)
+                .withMinSignalStrengthForValidMeasurement(2500)
             );
 
         canrange.getConfigurator().apply(canrangeConfig);

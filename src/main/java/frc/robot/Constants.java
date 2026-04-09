@@ -109,6 +109,7 @@ public class Constants {
             // upSpeedMap.put(3.0, 24.0);
             // upSpeedMap.put(4.0, 24.0);
             // upSpeedMap.put(5.0, 25.0);
+
             //upSpeedMap.put(6.0, 28.0);
             //upSpeedMap.put(999.0, 28.0);
 
@@ -118,7 +119,7 @@ public class Constants {
             upSpeedMap.put(2.75, 24.0);
             upSpeedMap.put(3.5, 24.0);
             upSpeedMap.put(4.5, 27.0);
-            upSpeedMap.put(5.5, 27.0);
+            upSpeedMap.put(5.5, 28.0);
             upSpeedMap.put(999.0, 28.0);
 
             //green
