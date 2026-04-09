@@ -84,6 +84,12 @@
           "data": {
             "name": "AutoClimb"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToDefaultPos"
+          }
         }
       ]
     }

@@ -67,12 +67,12 @@ public class Climber extends SubsystemBase {
             .withSlot0(
                 new Slot0Configs()
                     .withKS(0.0).withKV(8).withKA(0.25)
-                    .withKP(22).withKI(0.4).withKD(0)
+                    .withKP(20.0).withKI(0.2).withKD(0)
             )
             .withSlot1(
                 new Slot1Configs()
                     .withKS(0.0).withKV(8).withKA(0.25)
-                    .withKP(22).withKI(0.4).withKD(0)
+                    .withKP(20.0).withKI(0.2).withKD(0)
             )
             .withSoftwareLimitSwitch(
                 new SoftwareLimitSwitchConfigs()

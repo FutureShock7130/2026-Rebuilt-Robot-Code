@@ -55,8 +55,8 @@ public class AlignTower extends Command {
             timer.reset();
         } else {
             drivetrain.setControl(
-                driveRobot.withVelocityX(0.4)
-                    .withVelocityY(0.4)
+                driveRobot.withVelocityX(0.8)
+                    .withVelocityY(0.8)
                     .withTargetDirection(Rotation2d.fromDegrees(targetDeg))
             );
         }

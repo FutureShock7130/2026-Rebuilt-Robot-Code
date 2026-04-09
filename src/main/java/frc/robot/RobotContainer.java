@@ -131,6 +131,7 @@ public class RobotContainer {
             ).withTimeout(1.2)
         );
         NamedCommands.registerCommand("Climb", climber.toPreClimbPos());
+        NamedCommands.registerCommand("ToDefaultPos", climber.toDefaultPose());
         NamedCommands.registerCommand("AutoClimb", new AlignTower(drivetrain, climber));
 
         new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(24, 46)).withName("Accel"));
