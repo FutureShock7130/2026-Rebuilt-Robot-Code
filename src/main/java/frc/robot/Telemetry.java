@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
@@ -32,6 +33,7 @@ public class Telemetry {
      */
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
+        SignalLogger.setPath("/U/logs");
         SignalLogger.start();
 
         /* Set up the module state Mechanism2d telemetry */
@@ -54,8 +56,21 @@ public class Telemetry {
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
 
     private final NetworkTable componentStateTable = inst.getTable("ComponentState");
+    private final StructPublisher<Pose3d> intakePose = componentStateTable.getStructTopic("IntakePose", Pose3d.struct).publish();
+    private final StructPublisher<Pose3d> indexerPose = componentStateTable.getStructTopic("IndexerPose", Pose3d.struct).publish();
     private final StructPublisher<Pose3d> shooterPose = componentStateTable.getStructTopic("ShooterPose", Pose3d.struct).publish();
     private final StructPublisher<Pose3d> climberPose = componentStateTable.getStructTopic("ClimberPose", Pose3d.struct).publish();
+
+    private final NetworkTable shooterStateTable = inst.getTable("ShooterState");
+    private final DoublePublisher shooterAngle = shooterStateTable.getDoubleTopic("Pose").publish();
+    private final DoublePublisher upShooterSpeed = shooterStateTable.getDoubleTopic("UpSpeed").publish();
+    private final DoublePublisher downShooterSpeed = shooterStateTable.getDoubleTopic("DownSpeed").publish();
+
+    private final NetworkTable intakeStateTable = inst.getTable("IntakeState");
+    private final DoublePublisher intakeAngle = intakeStateTable.getDoubleTopic("Pose").publish();
+
+    private final NetworkTable climberStateTable = inst.getTable("ClimberState");
+    private final DoublePublisher climberHeight = climberStateTable.getDoubleTopic("Pose").publish();
 
     /* Robot pose for field positioning */
     private final NetworkTable table = inst.getTable("Pose");
@@ -126,14 +141,32 @@ public class Telemetry {
     }
 
     /** Accept the shooter angle and telemeterize it to SmartDashboard */
-    public void telemeterizeShooter(double pitchRadius) {
+    public void telemeterizeIntake(double pitchRotations) {
         // non-zero values are model asset offset for ascope
-        shooterPose.set(new Pose3d(-0.085, 0.0, 0.507, new Rotation3d(0.0, pitchRadius - 0.62, 0.0)));
+        intakePose.set(new Pose3d(0.312, 0, 0.222, new Rotation3d(0.0, Units.rotationsToRadians(-0.05 + pitchRotations), 0.0)));
+        indexerPose.set(new Pose3d(0.35 + Math.min((pitchRotations + 0.39) * 1.4, 0.28), 0, 0.37, new Rotation3d()));
+
+        intakeAngle.set(pitchRotations);
+    }
+
+    /** Accept the shooter angle and telemeterize it to SmartDashboard */
+    public void telemeterizeShooterAngle(double pitchRotations) {
+        // non-zero values are model asset offset for ascope
+        shooterPose.set(new Pose3d(-0.075, 0, 0.472, new Rotation3d(0.0, Units.rotationsToRadians(-0.0675 + pitchRotations), 0.0)));
+
+        shooterAngle.set(pitchRotations);
+    }
+
+    public void telemeterizeShooterSpeeds(double upSpeed, double downSpeed) {
+        upShooterSpeed.set(upSpeed);
+        downShooterSpeed.set(downSpeed);
     }
 
     /** Accept the shooter angle and telemeterize it to SmartDashboard*/
     public void telemeterizeClimber(double heightMeters) {
         // non-zero values are model asset offset for ascope
-        climberPose.set(new Pose3d(0, 0, heightMeters, new Rotation3d()));
+        climberPose.set(new Pose3d(-0.1, 0.282, 0.17 + heightMeters, new Rotation3d()));
+
+        climberHeight.set(heightMeters);
     }
 }
