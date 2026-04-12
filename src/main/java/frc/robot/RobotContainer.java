@@ -68,7 +68,7 @@ public class RobotContainer {
         Commands.sequence(
             Commands.race(new WaitCommand(0.5), intake.intake()),
             Commands.parallel(
-                new PathPlannerAuto("MidLeft-Climb"),
+                new PathPlannerAuto("gX40pFdG"),
                 climber.toPreClimbPos()
             ).until(climber::isAlignedToTower),
             new AlignTower(drivetrain, climber),
@@ -79,7 +79,7 @@ public class RobotContainer {
         Commands.sequence(
             intake.intake().withTimeout(0.5),
             Commands.parallel(
-                new PathPlannerAuto("MidRight-Climb"),
+                new PathPlannerAuto("BXiH6gX5"),
                 climber.toPreClimbPos()
             ).until(climber::isAlignedToTower),
             new AlignTower(drivetrain, climber),
@@ -137,8 +137,8 @@ public class RobotContainer {
         new EventTrigger("Accel").whileTrue(Commands.run(() -> shooter.setSpeed(24, 46)).withName("Accel"));
 
         autoChooser = AutoBuilder.buildAutoChooser();
-        autoChooser.addOption("TmpTowerLeft", autoClimbLeft);
-        autoChooser.addOption("TmpTowerRight", autoClimbRight);
+        autoChooser.addOption("LeftTowerClimb", autoClimbLeft);
+        autoChooser.addOption("RightTowerClimb", autoClimbRight);
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
@@ -191,8 +191,8 @@ public class RobotContainer {
 
         joystick.x().onTrue(climber.toPreClimbPos());
         joystick.y().onTrue(climber.toDefaultPose());
-        joystick.a().whileTrue(autoClimbLeft);
-        joystick.b().whileTrue(autoClimbRight);
+        // joystick.a().whileTrue(autoClimbLeft);
+        // joystick.b().whileTrue(autoClimbRight);
 
         // debug/test/manual mode trigger
         joystick.povLeft().toggleOnTrue(testShooterIndexer);

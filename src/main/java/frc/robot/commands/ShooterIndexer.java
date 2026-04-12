@@ -72,13 +72,8 @@ public class ShooterIndexer extends Command {
             SolvingParameters solvingParameters = new SolvingParameters(robotPoseSupplier.get(), chassisSpeedsSupplier.get(), AllianceFlipUtil.flip(aimingTarget));
             FiringSolution solution = compensator.solve(solvingParameters);
             
-            if ((robotTranslation.getX() - AllianceFlipUtil.flipX(0)) * (robotTranslation.getX() - AllianceFlipUtil.flipX(4.528)) < 0) { // in alliance zones
-                shooter.setAngle(solution.shooterAngle());
-                shooter.setSpeed(solution.shooterUpSpeed(), solution.shooterDownSpeed());
-            } else {
-                shooter.setAngle(solution.shooterAngle());
-                shooter.setSpeed(solution.shooterUpSpeed() - 8, solution.shooterDownSpeed() - 16);
-            }
+            shooter.setAngle(solution.shooterAngle());
+            shooter.setSpeed(solution.shooterUpSpeed(), solution.shooterDownSpeed());
             
             if (doShootSupplier.getAsBoolean() && solution.isReachable() && (!DriverStation.isAutonomous() || shooter.atTarget())) {
                 indexer.set(IndexerConstants.kIndexingSpeed, IndexerConstants.kIndexingSpeed);
