@@ -82,9 +82,11 @@ public class SwerveWithAim extends Command {
                 facingTarget = AllianceFlipUtil.flipY(robotPose.getY()) < 4.035 ? kRightTransportTarget : kLeftTransportTarget;
             }
 
-            Rotation2d angle = AllianceFlipUtil.toAllianceCoord(AllianceFlipUtil.flip(facingTarget).minus(robotPose.getTranslation()).getAngle());
+            Rotation2d angle = AllianceFlipUtil.toFieldCoord(AllianceFlipUtil.flip(facingTarget).minus(robotPose.getTranslation()).getAngle());
 
-            Rotation2d compensatedAngle = compensator.calculateCompensatedHeading(robotPose, fieldSpeeds, facingTarget);
+            //Rotation2d compensatedAngle = compensator.calculateCompensatedHeading(robotPose, fieldSpeeds, facingTarget);
+            Rotation2d compensatedAngle = AllianceFlipUtil.toAllianceCoord(compensator.calculateCompensatedHeading(robotPose, fieldSpeeds, AllianceFlipUtil.flip(facingTarget)));
+
             // Set modules to "X" fasion when near facing angle target and no driver inputs
             if (
                 Math.abs(angle.getDegrees() - robotPose.getRotation().getDegrees()) > 1.5
