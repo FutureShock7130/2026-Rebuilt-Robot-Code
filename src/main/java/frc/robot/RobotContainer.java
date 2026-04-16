@@ -183,7 +183,7 @@ public class RobotContainer {
         // Reset the field-centric heading on left bumper press.
         joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-        joystick.leftTrigger().toggleOnTrue(intake.intake());
+        joystick.leftTrigger().whileTrue(intake.intake());
         joystick.povUp().whileTrue(intake.outTake());
         joystick.povDown().onTrue(intake.toDefaultState());
         joystick.povRight().onTrue(intake.toFeedingState());
@@ -195,6 +195,8 @@ public class RobotContainer {
         // joystick.b().whileTrue(autoClimbRight);
 
         // debug/test/manual mode trigger
+
+        
         joystick.povLeft().toggleOnTrue(testShooterIndexer);
         operatorJoystick.start().onTrue(manualShooterIndexer);
         operatorJoystick.back().onTrue(shooterIndexer);
