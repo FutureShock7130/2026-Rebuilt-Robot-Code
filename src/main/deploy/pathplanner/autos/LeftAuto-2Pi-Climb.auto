@@ -15,6 +15,12 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.001
+                }
+              },
+              {
                 "type": "named",
                 "data": {
                   "name": "Intake"
