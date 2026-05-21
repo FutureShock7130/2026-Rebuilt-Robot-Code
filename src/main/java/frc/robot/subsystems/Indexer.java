@@ -21,8 +21,8 @@ public class Indexer extends SubsystemBase {
             .withNeutralMode(NeutralModeValue.Brake)
             .withInverted(InvertedValue.Clockwise_Positive);
         config.CurrentLimits
-            .withStatorCurrentLimit(80)
-            .withSupplyCurrentLimit(40);
+            .withStatorCurrentLimit(60)
+            .withSupplyCurrentLimit(30);
         PhoenixUtil.assertOk(upIndex, () -> upIndex.getConfigurator().apply(config));
 
         config.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);

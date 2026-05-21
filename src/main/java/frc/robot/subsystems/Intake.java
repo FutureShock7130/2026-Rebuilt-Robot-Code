@@ -69,9 +69,9 @@ public class Intake extends SubsystemBase {
         angleMotorConfig
             .withCurrentLimits(
                 new CurrentLimitsConfigs()
-                    .withStatorCurrentLimit(80)
-                    .withSupplyCurrentLimit(30)
-                    .withSupplyCurrentLowerLimit(30)
+                    .withStatorCurrentLimit(60)
+                    .withSupplyCurrentLimit(25)
+                    .withSupplyCurrentLowerLimit(25)
                     .withSupplyCurrentLowerTime(0.0)
             )
             .withFeedback(
