@@ -50,16 +50,17 @@ public class Constants {
         public static final int kIntakeMotorId = 60;
         public static final int kAngleCancoderId = 62;
         
-        public static final double kAngleMax = 0.336426;
-        public static final double kAngleMin = 0.0;
+        public static final double kAngleMax = -0.01;
+        public static final double kAngleMin =  -0.347412;  
 
         public static final double kRotorToSensorRatio = 60.0;
 
-        public static final double kIntakeAngle = 0.0;
+        public static final double kIntakeAngle =  -0.347412;
         public static final double kIntakeSpeed = 0.48;
-        public static final double kDefaultAngle = 0.28;
+        public static final double kDefaultAngle = -0.08;
 
-        public static final double kAngleCancoderOffset = -0.317626953125;
+        //public static final double kAngleCancoderOffset = -0.317626953125;
+        public static final double kAngleCancoderOffset = 0;
     }
 
     public static final class ShooterConstants {
