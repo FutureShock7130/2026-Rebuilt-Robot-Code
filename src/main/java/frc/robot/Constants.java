@@ -6,15 +6,34 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.CANBus;
 
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import frc.robot.generated.TunerConstants;
+
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
+// ...(其他 import 保持不變，包含 edu.wpi.first.units.Units 的 static import)
+
 
 public class Constants {
     public static final CANBus kCanivoreBus = new CANBus("GTX7130");
 
     public static final double kMaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double kMaxAngularRate = RotationsPerSecond.of(1.0).in(RadiansPerSecond);
+
+
+    public static final class VisionConstants {
+    public static final String kCameraName = "photonCam";
+    public static final Transform3d kRobotToCam = new Transform3d(
+        new Translation3d(0, -0.11, 0.558),
+        new Rotation3d(0, Units.degreesToRadians(-15.0), 0)
+        );
+    }
 
     public static final class FieldConstants {
         public static final Translation2d kHubLocation = new Translation2d(4.625, 4.034);

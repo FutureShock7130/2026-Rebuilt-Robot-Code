@@ -42,6 +42,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class RobotContainer {
     private final Telemetry logger = new Telemetry(kMaxSpeed);
@@ -49,7 +50,8 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final CommandXboxController operatorJoystick = new CommandXboxController(1);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    private final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    private final VisionSubsystem vision = new VisionSubsystem(drivetrain);
 
     private final Climber climber = new Climber();
     private final Indexer indexer = new Indexer();

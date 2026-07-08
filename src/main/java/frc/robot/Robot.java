@@ -26,8 +26,6 @@ public class Robot extends TimedRobot {
     private final HootAutoReplay m_timeAndJoystickReplay = new HootAutoReplay()
         .withTimestampReplay()
         .withJoystickReplay();
-
-    private final boolean kUseLimelight = true;
     
     private String gameData = "";
     private boolean rumbleCommandRegistered = false;
@@ -49,23 +47,7 @@ public class Robot extends TimedRobot {
          * This example is sufficient to show that vision integration is possible, though exact implementation
          * of how to use vision should be tuned per-robot and to the team's specification.
          */
-        if (kUseLimelight) {
-            var driveState = m_robotContainer.drivetrain.getState();
-            double headingDeg = driveState.Pose.getRotation().getDegrees();
-            double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-
-            LimelightHelpers.SetRobotOrientation("limelight-main", headingDeg, 0, 0, 0, 0, 0);
-            // LimelightHelpers.SetRobotOrientation("limelight-left", headingDeg, 0, 0, 0, 0, 0);
-            LimelightHelpers.PoseEstimate llRightMeasurement, llLeftMeasurement;
-            llRightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-main");
-            // llLeftMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-left");
-            if (llRightMeasurement != null && llRightMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-                m_robotContainer.drivetrain.addVisionMeasurement(llRightMeasurement.pose, llRightMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
-            }
-            // if (llLeftMeasurement != null && llLeftMeasurement.tagCount > 1 && Math.abs(omegaRps) < 2.0) {
-            //     m_robotContainer.drivetrain.addVisionMeasurement(llLeftMeasurement.pose, llLeftMeasurement.timestampSeconds, VecBuilder.fill(.7, .7, 999999));
-            // }
-        }
+        
 
         SmartDashboard.putNumber("MatchTime", DriverStation.getMatchTime() - getShiftLeftTime() + 0.99);
         SmartDashboard.putNumber("RobotVoltage", RobotController.getBatteryVoltage());
