@@ -68,26 +68,28 @@ public class SwerveWithAim extends Command {
 
     @Override
     public void execute() {
+        // robotPose 已經是「里程計 + 視覺融合」後的結果，這裡不用再管視覺細節
         Pose2d robotPose = drivetrain.getState().Pose;
         ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(drivetrain.getState().Speeds, robotPose.getRotation());
 
         if (
             doAimSupplier.getAsBoolean()
         ) {
-            // Switch aiming target between HUB and transport target based on robot's position
             Translation2d facingTarget;
-            if ((robotPose.getX() - AllianceFlipUtil.flipX(0)) * (robotPose.getX() - AllianceFlipUtil.flipX(4.528)) < 0) { // in alliance zones
+            if ((robotPose.getX() - AllianceFlipUtil.flipX(0)) * (robotPose.getX() - AllianceFlipUtil.flipX(4.528)) < 0) {
                 facingTarget = kHubLocation;
             } else {
                 facingTarget = AllianceFlipUtil.flipY(robotPose.getY()) < 4.035 ? kRightTransportTarget : kLeftTransportTarget;
             }
 
-            Rotation2d angle = AllianceFlipUtil.toFieldCoord(AllianceFlipUtil.flip(facingTarget).minus(robotPose.getTranslation()).getAngle());
+            Rotation2d angle = AllianceFlipUtil.toFieldCoord(
+                AllianceFlipUtil.flip(facingTarget).minus(robotPose.getTranslation()).getAngle()
+            );
 
-            //Rotation2d compensatedAngle = compensator.calculateCompensatedHeading(robotPose, fieldSpeeds, facingTarget);
-            Rotation2d compensatedAngle = AllianceFlipUtil.toAllianceCoord(compensator.calculateCompensatedHeading(robotPose, fieldSpeeds, AllianceFlipUtil.flip(facingTarget)));
+            Rotation2d compensatedAngle = AllianceFlipUtil.toAllianceCoord(
+                compensator.calculateCompensatedHeading(robotPose, fieldSpeeds, AllianceFlipUtil.flip(facingTarget))
+            );
 
-            // Set modules to "X" fasion when near facing angle target and no driver inputs
             if (
                 Math.abs(angle.getDegrees() - robotPose.getRotation().getDegrees()) > 1.5
                     || Math.abs(xSpeedSupplier.getAsDouble()) > 0
@@ -96,7 +98,7 @@ public class SwerveWithAim extends Command {
                 drivetrain.setControl(
                     driveAngle.withVelocityX(xSpeedSupplier.getAsDouble())
                         .withVelocityY(ySpeedSupplier.getAsDouble())
-                        .withTargetDirection(compensatedAngle) // change to angle to disable heading compensation
+                        .withTargetDirection(compensatedAngle)
                 );
             } else {
                 drivetrain.setControl(brake);
