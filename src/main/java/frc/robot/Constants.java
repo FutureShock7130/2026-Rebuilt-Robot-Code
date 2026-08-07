@@ -50,7 +50,7 @@ public class Constants {
         public static final int kIntakeMotorId = 60;
         public static final int kAngleCancoderId = 62;
         
-        public static final double kAngleMax = -0.01;
+        public static final double kAngleMax = -0.1;
         public static final double kAngleMin =  -0.347412;  
 
         public static final double kRotorToSensorRatio = 60.0;

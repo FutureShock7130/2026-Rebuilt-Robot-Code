@@ -17,6 +17,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -30,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
+import frc.robot.LimelightHelpers;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
 /**
@@ -50,6 +52,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
+
+    /* Name of the Limelight as configured on the device (change if yours is different) */
+    private static final String kLimelightName = "limelight";
+
+    /* Reject vision updates when the robot is spinning faster than this (deg/s) */
+    private static final double kMaxAngularRateForVisionDeg = 720.0;
 
     /** Swerve request to apply during robot-centric path following */
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
@@ -279,6 +287,42 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 );
                 m_hasAppliedOperatorPerspective = true;
             });
+        }
+
+        updateVisionMeasurement();
+    }
+
+    /**
+     * Pulls the latest MegaTag2 pose estimate from the Limelight and, if it passes
+     * basic sanity checks, fuses it into the pose estimator via addVisionMeasurement().
+     * Always uses the wpiBlue-origin field coordinate system regardless of alliance,
+     * since that is the WPILib standard origin (bottom-left, blue side) for both alliances.
+     */
+    private void updateVisionMeasurement() {
+        // MegaTag2 needs the current heading fed in before reading the pose estimate
+        LimelightHelpers.SetRobotOrientation(
+            kLimelightName,
+            getState().Pose.getRotation().getDegrees(),
+            0, 0, 0, 0, 0
+        );
+
+        LimelightHelpers.PoseEstimate mt2 =
+            LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(kLimelightName);
+
+        boolean doRejectUpdate = false;
+
+        if (mt2 == null || mt2.tagCount == 0) {
+            doRejectUpdate = true;
+        } else if (Math.abs(getState().Speeds.omegaRadiansPerSecond) > Math.toRadians(kMaxAngularRateForVisionDeg)) {
+            // Spinning too fast - MegaTag2 angle input becomes unreliable
+            doRejectUpdate = true;
+        }
+
+        if (!doRejectUpdate) {
+            // Trust vision more when we see more tags / they're closer together (tune these!)
+            double xyStdDev = mt2.tagCount >= 2 ? 0.5 : 0.9;
+            setVisionMeasurementStdDevs(VecBuilder.fill(xyStdDev, xyStdDev, 9999999));
+            addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
         }
     }
 
