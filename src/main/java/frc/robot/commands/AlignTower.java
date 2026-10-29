@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import static frc.robot.Constants.kMaxAngularRate;
+import static frc.robot.Constants.getDrivePowerScale;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -37,26 +38,30 @@ public class AlignTower extends Command {
 
     @Override
     public void execute() {
+        double powerScale = getDrivePowerScale();
         double targetDeg = drivetrain.getState().Pose.getY() < AllianceFlipUtil.flipY(3.7) ? 0 : 180;
         targetDeg = AllianceFlipUtil.isRedAlliance() ? targetDeg + 180 : targetDeg;
         if (!climber.isAlignedToTower()) {
             drivetrain.setControl(
-                driveRobot.withVelocityX(0.5)
+                driveRobot.withMaxAbsRotationalRate(kMaxAngularRate * powerScale)
+                    .withVelocityX(0.5 * powerScale)
                     .withVelocityY(0)
                     .withTargetDirection(Rotation2d.fromDegrees(targetDeg))
             );
             timer.reset();
         } else if (climber.getDistance() > 0.06) {    
             drivetrain.setControl(
-                driveRobot.withVelocityX(0)
-                    .withVelocityY(0.2)
+                driveRobot.withMaxAbsRotationalRate(kMaxAngularRate * powerScale)
+                    .withVelocityX(0)
+                    .withVelocityY(0.2 * powerScale)
                     .withTargetDirection(Rotation2d.fromDegrees(targetDeg))
             );
             timer.reset();
         } else {
             drivetrain.setControl(
-                driveRobot.withVelocityX(0.8)
-                    .withVelocityY(0.8)
+                driveRobot.withMaxAbsRotationalRate(kMaxAngularRate * powerScale)
+                    .withVelocityX(0.8 * powerScale)
+                    .withVelocityY(0.8 * powerScale)
                     .withTargetDirection(Rotation2d.fromDegrees(targetDeg))
             );
         }

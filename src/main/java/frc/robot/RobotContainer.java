@@ -5,10 +5,12 @@
 package frc.robot;
 
 import static frc.robot.Constants.kMaxSpeed;
-
 import static frc.robot.Constants.kMaxAngularRate;
+import static frc.robot.Constants.kDrivePowerScale;
+import static frc.robot.Constants.getDrivePowerScale;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -42,7 +44,8 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.vision.AlignToBallCommand;
+import frc.robot.subsystems.vision.BallVisionSubsystem;
 
 public class RobotContainer {
     private final Telemetry logger = new Telemetry(kMaxSpeed);
@@ -57,12 +60,17 @@ public class RobotContainer {
     private final Indexer indexer = new Indexer();
     private final Intake intake = new Intake();
     private final Shooter shooter = new Shooter();
+    private final BallVisionSubsystem ballVision = new BallVisionSubsystem();
+    private final AlignToBallCommand.Config ballAlignConfig = new AlignToBallCommand.Config();
+
+    private final SwerveRequest.FieldCentric visionDriveRequest = new SwerveRequest.FieldCentric()
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     private final SwerveWithAim drive = new SwerveWithAim(
         drivetrain,
-        () -> MathUtil.copyDirectionPow(-joystick.getLeftY(), 2.0) * kMaxSpeed,
-        () -> MathUtil.copyDirectionPow(-joystick.getLeftX(), 2.0) * kMaxSpeed,
-        () -> -joystick.getRightX() * kMaxAngularRate * SmartDashboard.getNumber("AngularRate", 1.0),
+        () -> MathUtil.copyDirectionPow(-joystick.getLeftY(), 2.0) * kMaxSpeed * getDrivePowerScale(),
+        () -> MathUtil.copyDirectionPow(-joystick.getLeftX(), 2.0) * kMaxSpeed * getDrivePowerScale(),
+        () -> -joystick.getRightX() * kMaxAngularRate * getDrivePowerScale() * SmartDashboard.getNumber("AngularRate", 1.0),
         joystick.rightBumper()
     );
 
@@ -152,8 +160,10 @@ public class RobotContainer {
         SmartDashboard.putData("Subsystems/Indexer", indexer);
         SmartDashboard.putData("Subsystems/Intake", intake);
         SmartDashboard.putData("Subsystems/Shooter", shooter);
+        SmartDashboard.putData("Subsystems/BallVision", ballVision);
 
-        SmartDashboard.putNumber("AngularRate", 1.5);
+        SmartDashboard.putNumber("DrivePowerScale", kDrivePowerScale);
+        SmartDashboard.putNumber("AngularRate", 1.0);
 
         ledCenter.initialize(joystick.getHID());
     }
@@ -193,7 +203,26 @@ public class RobotContainer {
 
         joystick.x().onTrue(climber.toPreClimbPos());
         joystick.y().onTrue(climber.toDefaultPose());
-        // joystick.a().whileTrue(autoClimbLeft);
+        // Align to ball toggle using button A
+        joystick.a().toggleOnTrue(new AlignToBallCommand(
+            ballVision,
+            ballAlignConfig,
+            omega -> {
+                double powerScale = getDrivePowerScale();
+                double rot = (Math.abs(joystick.getRightX()) > ballAlignConfig.joystickDeadband && !Double.isNaN(ballAlignConfig.joystickDeadband))
+                    ? -joystick.getRightX() * kMaxAngularRate * powerScale * SmartDashboard.getNumber("AngularRate", 1.0)
+                    : omega * kMaxAngularRate * powerScale;
+                drivetrain.setControl(
+                    visionDriveRequest
+                        .withVelocityX(MathUtil.copyDirectionPow(-joystick.getLeftY(), 2.0) * kMaxSpeed * powerScale)
+                        .withVelocityY(MathUtil.copyDirectionPow(-joystick.getLeftX(), 2.0) * kMaxSpeed * powerScale)
+                        .withRotationalRate(rot)
+                );
+            },
+            () -> true,
+            () -> -joystick.getRightX(),
+            drivetrain
+        ).withName("AlignToBall"));
         // joystick.b().whileTrue(autoClimbRight);
 
         // debug/test/manual mode trigger
